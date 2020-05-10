@@ -27,7 +27,7 @@ import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.R;
 import com.colman.fit_me.RecyclerViewClickInterface;
 import com.colman.fit_me.adapters.CategorieAdapter;
-import com.colman.fit_me.model.Categorie;
+import com.colman.fit_me.model.Category;
 
 import java.util.ArrayList;
 
@@ -35,21 +35,20 @@ import java.util.ArrayList;
 
 public class CategoriesFragment extends Fragment implements RecyclerViewClickInterface {
 
-    private CategoriesViewModel categoriesViewModel;
-    ArrayList<Categorie> categoriesList =new ArrayList<>();
+    public static final int NEW_RECIPE_ACTIVITY_REQUEST_CODE = 1;
+    ArrayList<Category> categoriesList =new ArrayList<>();
     private RecyclerView recyclerView;
     private CategorieAdapter adapter;
 
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        categoriesViewModel = ViewModelProviders.of(this).get(CategoriesViewModel.class);
-        categoriesList.add(new Categorie("Categorie 1"));
-        categoriesList.add(new Categorie("Categorie 2"));
-        categoriesList.add(new Categorie("Categorie 3"));
-        categoriesList.add(new Categorie("Categorie 4"));
-        categoriesList.add(new Categorie("Categorie 5"));
-        categoriesList.add(new Categorie("Categorie 6"));
+        categoriesList.add(new Category("Category 1"));
+        categoriesList.add(new Category("Category 2"));
+        categoriesList.add(new Category("Category 3"));
+        categoriesList.add(new Category("Category 4"));
+        categoriesList.add(new Category("Category 5"));
+        categoriesList.add(new Category("Category 6"));
 
         View root = inflater.inflate(R.layout.fragment_categories, container, false);
         recyclerView = root.findViewById(R.id.recycler_view);

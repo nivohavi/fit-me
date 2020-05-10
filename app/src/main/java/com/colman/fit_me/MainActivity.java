@@ -1,9 +1,13 @@
 package com.colman.fit_me;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.colman.fit_me.ui.categories.CategoriesFragment;
+import com.colman.fit_me.ui.recipes.NewRecipeFragment;
+import com.colman.fit_me.ui.recipes.RecipeListFragment;
+import com.colman.fit_me.viewmodel.RecipeViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +19,8 @@ import androidx.navigation.ui.NavigationUI;
 public class MainActivity extends AppCompatActivity{
 
     AppBarConfiguration appBarConfiguration;
+    private RecipeViewModel mWordViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +33,7 @@ public class MainActivity extends AppCompatActivity{
 
 
         appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_categories, R.id.navigation_dashboard, R.id.navigation_user_profile)
+                R.id.navigation_categories, R.id.navigation_recipe_list, R.id.navigation_user_profile)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -55,6 +61,13 @@ public class MainActivity extends AppCompatActivity{
     {
         // Disable back button
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode,resultCode,data);
+    }
+
 
 
 }

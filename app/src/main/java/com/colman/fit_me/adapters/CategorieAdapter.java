@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.colman.fit_me.R;
 import com.colman.fit_me.RecyclerViewClickInterface;
-import com.colman.fit_me.model.Categorie;
+import com.colman.fit_me.model.Category;
 import com.colman.fit_me.ui.ex_item.ExItemdFragment;
 
 import java.util.ArrayList;
@@ -22,18 +22,18 @@ import java.util.ArrayList;
 // Note that we specify the custom ViewHolder which gives us access to our views
 public class CategorieAdapter extends RecyclerView.Adapter<CategorieAdapter.CategorieViewHolder>
 {
-    private ArrayList<Categorie> dataList;
+    private ArrayList<Category> dataList;
     private RecyclerViewClickInterface recyclerViewClickInterface;
 
 
 
-    public CategorieAdapter(ArrayList<Categorie> dataList)
+    public CategorieAdapter(ArrayList<Category> dataList)
     {
         this.dataList = dataList;
     }
 
 
-    public CategorieAdapter(ArrayList<Categorie> dataList, RecyclerViewClickInterface recyclerViewClickInterface)
+    public CategorieAdapter(ArrayList<Category> dataList, RecyclerViewClickInterface recyclerViewClickInterface)
     {
         this.dataList = dataList;
         this.recyclerViewClickInterface = recyclerViewClickInterface;

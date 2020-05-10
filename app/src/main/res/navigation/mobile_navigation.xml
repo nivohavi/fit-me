@@ -18,10 +18,20 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.colman.fit_me.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_recipe_list"
+        android:name="com.colman.fit_me.ui.recipes.RecipeListFragment"
+        android:label="fragment_recipe_list"
+        tools:layout="@layout/fragment_recipe_list">
+        <action
+            android:id="@+id/action_navigation_recipe_list_to_navigation_new_recipe"
+            app:destination="@id/navigation_new_recipe"
+            app:popUpToInclusive="true" />
+        <argument android:name="recipeObj"
+            app:argType="com.colman.fit_me.model.Recipe"
+            app:nullable="true"
+            android:defaultValue="@null" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_user_profile"
@@ -41,4 +51,20 @@
         android:name="com.colman.fit_me.ui.ex_item.ExItemdFragment"
         android:label="@string/title_ex_item"
         tools:layout="@layout/fragment_ex" />
+
+
+    <fragment
+        android:id="@+id/navigation_new_recipe"
+        android:name="com.colman.fit_me.ui.recipes.NewRecipeFragment"
+        android:label="fragment_new_recipe"
+        tools:layout="@layout/fragment_new_recipe" >
+        <argument android:name="message"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_navigation_new_recipe_to_navigation_recipe_list"
+            app:destination="@id/navigation_recipe_list"
+            app:popUpToInclusive="true" />
+    </fragment>
+
 </navigation>

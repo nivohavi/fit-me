@@ -1,18 +1,22 @@
 package com.colman.fit_me.model;
 
-public class Categorie {
+import java.io.Serializable;
+
+public class Category implements Serializable {
+
+
     public String name;
     public String image;
 
 
-    public Categorie() {
+    public Category() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public Categorie(String name) {
+    public Category(String name) {
         this.name = name;
     }
-    public Categorie(String name, String image) {
+    public Category(String name, String image) {
         this.name = name;
         this.image = image;
     }
