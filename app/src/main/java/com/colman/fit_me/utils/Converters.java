@@ -2,15 +2,30 @@ package com.colman.fit_me.utils;
 
 import androidx.room.TypeConverter;
 
+import com.google.firebase.Timestamp;
+
 import java.util.Date;
 
 public class Converters {
-    @TypeConverter
-    public static Date fromTimestamp(Long value) {
-        return value == null ? null : new Date(value);
+
+/*    @TypeConverter
+    public static Date fromTimestamp(Timestamp value)
+    {
+        return value == null ? null : value.toDate();
     }
     @TypeConverter
-    public static Long dateToTimestamp(Date date) {
+    public static Long dateToTimestamp(Date date)
+    {
         return date == null ? null : date.getTime();
-    }
+    }*/
+
+
+        @TypeConverter
+        public static Date fromTimestamp(Long value) {
+            return value == null ? null : new Date(value);
+        }
+        @TypeConverter
+        public static Long dateToTimestamp(Date date) {
+            return date == null ? null : date.getTime();
+        }
 }

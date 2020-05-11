@@ -7,9 +7,11 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.colman.fit_me.utils.Converters;
+import com.google.firebase.Timestamp;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 @Entity(tableName = "recipe_table")
 public class Recipe implements Serializable {
@@ -30,8 +32,8 @@ public class Recipe implements Serializable {
     public String directions;
     @ColumnInfo(name = "ingredientsJson")
     public String ingredientsJson;
-    @TypeConverters({Converters.class})
     @ColumnInfo(name = "timestamp")
+    @TypeConverters({Converters.class})
     public Date timestamp;
 
     public Recipe(@NonNull String id, String name, String imgURL, String category, String description, String directions, String ingredientsJson, Date timestamp) {
@@ -49,13 +51,24 @@ public class Recipe implements Serializable {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
+    public Recipe(Map<String, Object> data) {
+        this.id = ((String) data.get("id"));
+        this.name = ((String) data.get("name"));
+        this.imgURL = ((String) data.get("imgURL"));
+        this.category = ((String) data.get("category"));
+        this.description = ((String) data.get("description"));
+        this.directions = ((String) data.get("directions"));
+        this.ingredientsJson = ((String) data.get("ingredientsJson"));
+        this.timestamp = timestamp_to_date((Timestamp) data.get("timestamp"));
+    }
+/*
     public Recipe(String name) {
         this.name = name;
     }
     public Recipe(String name, String imgURL) {
         this.name = name;
         this.imgURL = imgURL;
-    }
+    }*/
 
 
     @NonNull
@@ -121,6 +134,10 @@ public class Recipe implements Serializable {
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public Date timestamp_to_date(Timestamp ts){
+        return ts.toDate();
     }
 
 

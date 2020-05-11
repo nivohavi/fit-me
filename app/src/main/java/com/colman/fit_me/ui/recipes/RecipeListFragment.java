@@ -66,18 +66,18 @@ public class RecipeListFragment extends Fragment implements RecyclerViewClickInt
         recyclerView.setAdapter(adapter);
 
         mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
-/*        mRecipeViewModel.getAllRecipes().observe(this.getViewLifecycleOwner(), new Observer<List<Recipe>>() {
+        mRecipeViewModel.getRecipes().observe(this.getViewLifecycleOwner(), new Observer<List<Recipe>>() {
             @Override
             public void onChanged(@Nullable final List<Recipe> recipes) {
                 // Update the cached copy of the words in the adapter.
                 adapter.setRecipes(recipes);
             }
-        });*/
+        });
 
-        mRecipeViewModel.getRecipes().observe(this.getViewLifecycleOwner(),recipes -> {
+/*        mRecipeViewModel.getRecipes().observe(this.getViewLifecycleOwner(),recipes -> {
             Log.d("Niv", recipes.toString());
             adapter.setRecipes(recipes);
-        });
+        });*/
 
         return root;
     }
