@@ -1,64 +1,42 @@
 {
   "project_info": {
-    "project_number": "407761514232",
-    "firebase_url": "https://fitme-92bad.firebaseio.com",
-    "project_id": "fitme-92bad",
-    "storage_bucket": "fitme-92bad.appspot.com"
+    "project_number": "207772681559",
+    "firebase_url": "https://matkon-5d8d7.firebaseio.com",
+    "project_id": "matkon-5d8d7",
+    "storage_bucket": "matkon-5d8d7.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:407761514232:android:1155b1b247d6a4c29e550d",
+        "mobilesdk_app_id": "1:207772681559:android:d65a8409ea47baf2be2a12",
         "android_client_info": {
           "package_name": "com.colman.fit_me"
         }
       },
       "oauth_client": [
         {
-          "client_id": "407761514232-v7qts4mpgd6dnkisqbhrn1i4qq4dq8r5.apps.googleusercontent.com",
+          "client_id": "207772681559-tt8g3r8jgbolfb42cgglnvpl4bp9jkhb.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDZJnKwHvB9Pah1O9ME14hUxF4qShHdb-U"
+          "current_key": "AIzaSyCbs38XY9WFzJQwves4ki9yg2g-AH5-ffA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "407761514232-v7qts4mpgd6dnkisqbhrn1i4qq4dq8r5.apps.googleusercontent.com",
+              "client_id": "207772681559-tt8g3r8jgbolfb42cgglnvpl4bp9jkhb.apps.googleusercontent.com",
               "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:407761514232:android:751721d28ead9d009e550d",
-        "android_client_info": {
-          "package_name": "com.colman.fitme"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "407761514232-v7qts4mpgd6dnkisqbhrn1i4qq4dq8r5.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDZJnKwHvB9Pah1O9ME14hUxF4qShHdb-U"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
+            },
             {
-              "client_id": "407761514232-v7qts4mpgd6dnkisqbhrn1i4qq4dq8r5.apps.googleusercontent.com",
-              "client_type": 3
+              "client_id": "207772681559-2a282tdqhiifabeulfpaf6if8mno200c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.Matkon"
+              }
             }
           ]
         }

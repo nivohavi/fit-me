@@ -22,12 +22,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.colman.fit_me.R;
+import com.colman.fit_me.firebase.FirestoreManager;
 import com.colman.fit_me.model.Recipe;
 import com.colman.fit_me.utils.RQChangedListener;
 import com.colman.fit_me.utils.RequestCode;
 import com.colman.fit_me.viewmodel.RecipeViewModel;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Random;
 
@@ -44,6 +48,8 @@ public class NewRecipeFragment extends Fragment {
     public static String recipeName;
     public RQChangedListener rq;
     private RecipeViewModel mRecipeViewModel;
+    private FirestoreManager recipesFirestoreManager;
+
 
 
     public NewRecipeFragment() {
@@ -54,6 +60,7 @@ public class NewRecipeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        recipesFirestoreManager = FirestoreManager.newInstance();
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_new_recipe, container, false);
         mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
@@ -86,8 +93,12 @@ public class NewRecipeFragment extends Fragment {
                     String recipe_name = mEditRecipeView.getText().toString();
                     Recipe r = new Recipe(x.toString(),recipe_name,"https://sdsadsa","Italian","This is description","This is directions", "This is ingredientsJson",new Date());
 
+
+
+
                     // New Recipe Insertion
                     mRecipeViewModel.insert(r);
+                    recipesFirestoreManager.createDocument(r);
                     NewRecipeFragmentDirections.ActionNavigationNewRecipeToNavigationRecipeList action = NewRecipeFragmentDirections.actionNavigationNewRecipeToNavigationRecipeList();
                     nav.navigate(action);
                 }
