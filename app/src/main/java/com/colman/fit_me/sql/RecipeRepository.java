@@ -1,16 +1,23 @@
 package com.colman.fit_me.sql;
 
 import android.app.Application;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
+import com.colman.fit_me.LoginActivity;
+import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.firebase.FirebaseQueryLiveData;
 import com.colman.fit_me.model.Recipe;
+import com.colman.fit_me.ui.recipes.NewRecipeFragment;
 import com.colman.fit_me.ui.recipes.RecipeListFragment;
 import com.colman.fit_me.viewmodel.RecipeViewModel;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
@@ -26,8 +33,8 @@ public class RecipeRepository {
     CollectionReference collectionReference;
     private FirebaseQueryLiveData firebaseQueryLiveData;
     private RecipeViewModel mRecipeViewModel;
-    private FirebaseFirestore mDatabase;
     public static Date lud;
+    DocumentReference newRecipe;
 
 
 
@@ -38,7 +45,6 @@ public class RecipeRepository {
     public RecipeRepository(Application application) {
         //lud = new Date();
         lud = new GregorianCalendar(2014, Calendar.FEBRUARY, 11).getTime();
-
         RecipeRoomDatabase db = RecipeRoomDatabase.getDatabase(application);
         mRecipeDao = db.recipeDao();
         mAllRecipes = mRecipeDao.getAllRecipes();
@@ -60,11 +66,6 @@ public class RecipeRepository {
     // You must call this on a non-UI thread or your app will throw an exception. Room ensures
     // that you're not doing any long running operations on the main thread, blocking the UI.
     public void insert(final Recipe recipe) {
-        //
-        // Add Recipe is only to FireBase - not to Room(SQL)
-        //
-
-        lud = new Date();
         RecipeRoomDatabase.databaseWriteExecutor.execute(() -> {
             mRecipeDao.insert(recipe);
         });

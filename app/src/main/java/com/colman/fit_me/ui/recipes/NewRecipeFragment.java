@@ -1,4 +1,5 @@
 package com.colman.fit_me.ui.recipes;
+import java.util.UUID;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import com.colman.fit_me.R;
 import com.colman.fit_me.firebase.FirestoreManager;
 import com.colman.fit_me.model.Recipe;
+import com.colman.fit_me.ui.categories.CategoriesFragment;
 import com.colman.fit_me.utils.RQChangedListener;
 import com.colman.fit_me.utils.RequestCode;
 import com.colman.fit_me.viewmodel.RecipeViewModel;
@@ -42,13 +44,10 @@ public class NewRecipeFragment extends Fragment {
 
     View root;
     NavController nav;
-    public static final String EXTRA_REPLY = "com.example.android.wordlistsql.REPLY";
     private EditText mEditRecipeView;
-    public static String RQ_Result;
-    public static String recipeName;
-    public RQChangedListener rq;
+    private String pressed_category;
+
     private RecipeViewModel mRecipeViewModel;
-    private FirestoreManager recipesFirestoreManager;
 
 
 
@@ -60,7 +59,6 @@ public class NewRecipeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        recipesFirestoreManager = FirestoreManager.newInstance();
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_new_recipe, container, false);
         mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
@@ -72,9 +70,7 @@ public class NewRecipeFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
-        TextView tv = view.findViewById(R.id.textViewAmount);
-        //String categorie = NewRecipeFragmentArgs.fromBundle(getArguments()).getMessage();
-        //tv.setText(categorie + "");
+        pressed_category = NewRecipeFragmentArgs.fromBundle(getArguments()).getMessage();
 
 
         nav = NavHostFragment.findNavController(this);
@@ -88,19 +84,13 @@ public class NewRecipeFragment extends Fragment {
                 }
                 else
                 {
-                    Random rand =new Random();
-                    Integer x = new Integer(rand.nextInt());
                     String recipe_name = mEditRecipeView.getText().toString();
-                    Recipe r = new Recipe(x.toString(),recipe_name,"https://sdsadsa","Italian","This is description","This is directions", "This is ingredientsJson",new Date());
+                    UUID generatedId = UUID.randomUUID();
+                    Recipe r = new Recipe(generatedId.toString(),recipe_name,"https://sdsadsa", pressed_category,"This is description","This is directions", "This is ingredientsJson",new Date());
 
-
-
-
-                    // New Recipe Insertion
+                    // New Recipe Insertion - only to Firebase
                     mRecipeViewModel.insert(r);
-                    recipesFirestoreManager.createDocument(r);
-                    NewRecipeFragmentDirections.ActionNavigationNewRecipeToNavigationRecipeList action = NewRecipeFragmentDirections.actionNavigationNewRecipeToNavigationRecipeList();
-                    nav.navigate(action);
+                    nav.navigate(R.id.action_navigation_new_recipe_to_navigation_recipe_list);
                 }
             }
         });

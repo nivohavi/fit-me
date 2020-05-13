@@ -25,8 +25,6 @@ public class CategorieAdapter extends RecyclerView.Adapter<CategorieAdapter.Cate
     private ArrayList<Category> dataList;
     private RecyclerViewClickInterface recyclerViewClickInterface;
 
-
-
     public CategorieAdapter(ArrayList<Category> dataList)
     {
         this.dataList = dataList;

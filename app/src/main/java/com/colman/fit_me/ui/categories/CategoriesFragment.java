@@ -1,6 +1,7 @@
 package com.colman.fit_me.ui.categories;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
@@ -28,6 +30,7 @@ import com.colman.fit_me.R;
 import com.colman.fit_me.RecyclerViewClickInterface;
 import com.colman.fit_me.adapters.CategorieAdapter;
 import com.colman.fit_me.model.Category;
+import com.colman.fit_me.ui.recipes.RecipeListFragmentDirections;
 
 import java.util.ArrayList;
 
@@ -35,24 +38,32 @@ import java.util.ArrayList;
 
 public class CategoriesFragment extends Fragment implements RecyclerViewClickInterface {
 
-    public static final int NEW_RECIPE_ACTIVITY_REQUEST_CODE = 1;
+    NavController nav;
     ArrayList<Category> categoriesList =new ArrayList<>();
     private RecyclerView recyclerView;
     private CategorieAdapter adapter;
+    public static String categoryPressed;
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+
+        // Floating action button
+        nav = NavHostFragment.findNavController(this);
+    }
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        categoriesList.add(new Category("Category 1"));
-        categoriesList.add(new Category("Category 2"));
-        categoriesList.add(new Category("Category 3"));
-        categoriesList.add(new Category("Category 4"));
+        categoriesList.add(new Category("French"));
+        categoriesList.add(new Category("Italian"));
+        categoriesList.add(new Category("Israeli"));
+        categoriesList.add(new Category("Mexican"));
         categoriesList.add(new Category("Category 5"));
         categoriesList.add(new Category("Category 6"));
 
         View root = inflater.inflate(R.layout.fragment_categories, container, false);
         recyclerView = root.findViewById(R.id.recycler_view);
         adapter = new CategorieAdapter(categoriesList, this);
+
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -71,13 +82,10 @@ public class CategoriesFragment extends Fragment implements RecyclerViewClickInt
     @Override
     public void onItemClick(int position) {
         Toast.makeText(getActivity() , categoriesList.get(position).name, Toast.LENGTH_SHORT).show();
-        //Intent i = new Intent(getActivity(), ExActivity.class);
-        //startActivity(i);
-        NavController nav = NavHostFragment.findNavController(this);
-        //nav.popBackStack(R.id.navigation_exercises, false);
-        nav.navigate(R.id.action_navigation_categories_to_navigation_exercises);
 
-
+        CategoriesFragmentDirections.ActionNavigationCategoriesToNavigationRecipeList action = CategoriesFragmentDirections.actionNavigationCategoriesToNavigationRecipeList(categoriesList.get(position).name);
+        action.setCategory(categoriesList.get(position).name);
+        nav.navigate(action);
 
     }
 

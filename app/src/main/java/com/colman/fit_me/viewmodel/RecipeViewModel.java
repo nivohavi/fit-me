@@ -1,9 +1,11 @@
 package com.colman.fit_me.viewmodel;
 
 import android.app.Application;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -15,10 +17,12 @@ import com.colman.fit_me.model.Recipe;
 import com.colman.fit_me.sql.RecipeRepository;
 import com.colman.fit_me.sql.RecipeRoomDatabase;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -28,6 +32,7 @@ import java.util.List;
 
 public class RecipeViewModel extends AndroidViewModel {
 
+    private FirebaseFirestore fb;
     private RecipeRepository mRepository;
     private LiveData<List<Recipe>> mAllRecipes;
     private MutableLiveData<List<Recipe>> recipes;
@@ -39,6 +44,7 @@ public class RecipeViewModel extends AndroidViewModel {
     public RecipeViewModel (Application application)
     {
         super(application);
+        fb = FirebaseFirestore.getInstance();
         mRepository = new RecipeRepository(application);
         mAllRecipes = mRepository.getAllRecipes();
         firestoreManager = FirestoreManager.newInstance();
@@ -62,7 +68,18 @@ public class RecipeViewModel extends AndroidViewModel {
 
     public void insert(Recipe recipe)
     {
-        mRepository.insert(recipe);
+        //
+        // Add Recipe is only to FireBase - not to Room(SQL)
+        //
+        fb.collection("recipes").document().set(recipe).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("Niv", "XXXXXXXXXXXXXX -----  Success ----------- XXXXXXXXX");
+                RecipeRepository.lud = new Date();
+            }
+        });
+
+        //mRepository.insert(recipe);
     }
 
 
@@ -75,7 +92,18 @@ public class RecipeViewModel extends AndroidViewModel {
         return mAllRecipes;
     }
 
+    public LiveData<List<Recipe>> getRecipesByCategory(String category) {
+        if (recipes == null) {
+            recipes = new MutableLiveData<List<Recipe>>();
+            //loadRecipesByCategory(category);
+            loadRecipes();
+        }
+        //return recipes;
+        //TODO: return query
+        //recipes.getValue().removeIf(recipe -> (!recipe.getCategory().equals(category)));
 
+        return mAllRecipes;
+    }
 
     private void loadRecipes() {
 
@@ -99,7 +127,8 @@ public class RecipeViewModel extends AndroidViewModel {
                         Recipe r = new Recipe(document.getData());
                         if(r.getTimestamp().after(d))
                         {
-                            insert(r);
+                            // Insert to SQL (Room)
+                            mRepository.insert(r);
                         }
                         list.add(r);
                     }
@@ -110,6 +139,5 @@ public class RecipeViewModel extends AndroidViewModel {
                 }
             }
         });
-
     }
 }
