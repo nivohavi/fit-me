@@ -38,21 +38,28 @@ import java.util.ArrayList;
 
 public class CategoriesFragment extends Fragment implements RecyclerViewClickInterface {
 
+    View root;
     NavController nav;
     ArrayList<Category> categoriesList =new ArrayList<>();
     private RecyclerView recyclerView;
     private CategorieAdapter adapter;
     public static String categoryPressed;
 
+
+    public CategoriesFragment() {
+        // Required empty public constructor
+    }
+
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
-        // Floating action button
         nav = NavHostFragment.findNavController(this);
     }
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Categories");
         categoriesList.add(new Category("French"));
         categoriesList.add(new Category("Italian"));
         categoriesList.add(new Category("Israeli"));
@@ -60,7 +67,7 @@ public class CategoriesFragment extends Fragment implements RecyclerViewClickInt
         categoriesList.add(new Category("Category 5"));
         categoriesList.add(new Category("Category 6"));
 
-        View root = inflater.inflate(R.layout.fragment_categories, container, false);
+        root = inflater.inflate(R.layout.fragment_categories, container, false);
         recyclerView = root.findViewById(R.id.recycler_view);
         adapter = new CategorieAdapter(categoriesList, this);
 
@@ -68,7 +75,7 @@ public class CategoriesFragment extends Fragment implements RecyclerViewClickInt
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-
+        //getActivity().setTitle("Categories");
         return root;
     }
 

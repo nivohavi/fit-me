@@ -2,6 +2,7 @@ package com.colman.fit_me;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.colman.fit_me.ui.categories.CategoriesFragment;
@@ -10,8 +11,11 @@ import com.colman.fit_me.ui.recipes.RecipeListFragment;
 import com.colman.fit_me.viewmodel.RecipeViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -33,28 +37,20 @@ public class MainActivity extends AppCompatActivity{
 
 
         appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_categories, R.id.navigation_recipe_list, R.id.navigation_user_profile,R.id.navigation_recipe_details)
+                R.id.navigation_categories,R.id.navigation_my_recipes, R.id.navigation_user_profile)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        return navController.navigateUp();
-        //return NavigationUI.navigateUp(navController, appBarConfiguration) || super.onSupportNavigateUp();
+        return NavigationUI.navigateUp(navController, appBarConfiguration) || super.onSupportNavigateUp();
     }
 
-/*
-    @Override
-    public boolean onSupportNavigateUp() {
-        return super.onSupportNavigateUp();
-    }
-*/
 
     @Override
     public void onBackPressed()
@@ -67,7 +63,6 @@ public class MainActivity extends AppCompatActivity{
     {
         super.onActivityResult(requestCode,resultCode,data);
     }
-
 
 
 }

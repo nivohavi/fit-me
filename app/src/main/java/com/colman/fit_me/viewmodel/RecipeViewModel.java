@@ -82,6 +82,22 @@ public class RecipeViewModel extends AndroidViewModel {
         //mRepository.insert(recipe);
     }
 
+    public void delete(String id)
+    {
+        //
+        // Add Recipe is only to FireBase - not to Room(SQL)
+        //
+        fb.collection("recipes").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("Niv", "XXXXXXXXXXXXXX -----  Success ----------- XXXXXXXXX");
+                RecipeRepository.lud = new Date();
+            }
+        });
+
+        //mRepository.insert(recipe);
+    }
+
 
     public LiveData<List<Recipe>> getRecipes() {
         if (recipes == null) {

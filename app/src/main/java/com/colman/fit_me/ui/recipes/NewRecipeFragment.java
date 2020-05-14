@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -70,10 +71,12 @@ public class NewRecipeFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
-        pressed_category = NewRecipeFragmentArgs.fromBundle(getArguments()).getMessage();
-
-
         nav = NavHostFragment.findNavController(this);
+
+        pressed_category = NewRecipeFragmentArgs.fromBundle(getArguments()).getMessage();
+        //NavigationUI.setupWithNavController(R.id.nav_view, nav);
+
+
         mEditRecipeView = root.findViewById(R.id.edit_word);
         final Button button = root.findViewById(R.id.button_save);
         button.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +93,9 @@ public class NewRecipeFragment extends Fragment {
 
                     // New Recipe Insertion - only to Firebase
                     mRecipeViewModel.insert(r);
-                    nav.navigate(R.id.action_navigation_new_recipe_to_navigation_recipe_list);
+                    NewRecipeFragmentDirections.ActionNavigationNewRecipeToNavigationRecipeList action = NewRecipeFragmentDirections.actionNavigationNewRecipeToNavigationRecipeList(r.getCategory());
+                    nav.navigate(action);
+                    //nav.navigate(R.id.action_navigation_new_recipe_to_navigation_recipe_list);
                 }
             }
         });

@@ -1,6 +1,7 @@
 package com.colman.fit_me.ui.recipes;
 
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -77,7 +78,8 @@ public class RecipeListFragment extends Fragment implements RecyclerViewClickInt
             adapter.setRecipes(recipes);
         });
 
-        getActivity().setTitle("Set Title Programatically");
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle(pressed_category);
+
 
         return root;
     }
@@ -121,5 +123,10 @@ public class RecipeListFragment extends Fragment implements RecyclerViewClickInt
 
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        //((MainActivity) getActivity()).getSupportActionBar().setTitle("Categories");
+    }
 
 }

@@ -8,19 +8,20 @@
     <fragment
         android:id="@+id/navigation_categories"
         android:name="com.colman.fit_me.ui.categories.CategoriesFragment"
-        android:label="@string/title_categories"
         tools:layout="@layout/fragment_categories" >
         <action
             android:id="@+id/action_navigation_categories_to_navigation_recipe_list"
             app:destination="@id/navigation_recipe_list"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <argument
+            android:name="category"
+            app:argType="string" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_recipe_list"
         android:name="com.colman.fit_me.ui.recipes.RecipeListFragment"
-        android:label="fragment_recipe_list"
         tools:layout="@layout/fragment_recipe_list">
         <action
             android:id="@+id/action_navigation_recipe_list_to_navigation_new_recipe"
@@ -40,14 +41,12 @@
     <fragment
         android:id="@+id/navigation_user_profile"
         android:name="com.colman.fit_me.ui.user_profile.UserProfileFragment"
-        android:label="@string/title_user_profile"
         tools:layout="@layout/fragment_user_profile" />
 
 
     <fragment
         android:id="@+id/navigation_new_recipe"
         android:name="com.colman.fit_me.ui.recipes.NewRecipeFragment"
-        android:label="fragment_new_recipe"
         tools:layout="@layout/fragment_new_recipe" >
         <argument android:name="message"
             app:argType="string"
@@ -60,8 +59,25 @@
     <fragment
         android:id="@+id/navigation_recipe_details"
         android:name="com.colman.fit_me.ui.recipes.RecipeDetailsFragment"
-        android:label="fragment_recipe_details"
         tools:layout="@layout/fragment_recipe_details" >
+        <argument
+            android:name="recipeObj"
+            app:argType="com.colman.fit_me.model.Recipe"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_my_recipes"
+        android:name="com.colman.fit_me.ui.recipes.MyRecipesFragment"
+        tools:layout="@layout/fragment_my_recipes">
+        <action
+            android:id="@+id/action_myRecipesFragment_to_editRecipeFragment"
+            app:destination="@id/navigation_edit_recipe" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_edit_recipe"
+        android:name="com.colman.fit_me.ui.recipes.EditRecipeFragment"
+        android:label="fragment_edit_recipe"
+        tools:layout="@layout/fragment_edit_recipe" >
         <argument
             android:name="recipeObj"
             app:argType="com.colman.fit_me.model.Recipe"
