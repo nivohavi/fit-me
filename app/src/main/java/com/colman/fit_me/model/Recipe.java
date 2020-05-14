@@ -24,6 +24,8 @@ public class Recipe implements Serializable {
     public String name;
     @ColumnInfo(name = "imgURL")
     public String imgURL;
+    @ColumnInfo(name = "createdBy")
+    public String createdBy;
     @ColumnInfo(name = "category")
     public String category;
     @ColumnInfo(name = "description")
@@ -36,10 +38,11 @@ public class Recipe implements Serializable {
     @TypeConverters({Converters.class})
     public Date timestamp;
 
-    public Recipe(@NonNull String id, String name, String imgURL, String category, String description, String directions, String ingredientsJson, Date timestamp) {
+    public Recipe(@NonNull String id, String name, String imgURL,String createdBy, String category, String description, String directions, String ingredientsJson, Date timestamp) {
         this.id = id;
         this.name = name;
         this.imgURL = imgURL;
+        this.createdBy = createdBy;
         this.category = category;
         this.description = description;
         this.directions = directions;
@@ -55,6 +58,7 @@ public class Recipe implements Serializable {
         this.id = ((String) data.get("id"));
         this.name = ((String) data.get("name"));
         this.imgURL = ((String) data.get("imgURL"));
+        this.createdBy = ((String) data.get("createdBy"));
         this.category = ((String) data.get("category"));
         this.description = ((String) data.get("description"));
         this.directions = ((String) data.get("directions"));
@@ -138,6 +142,14 @@ public class Recipe implements Serializable {
 
     public Date timestamp_to_date(Timestamp ts){
         return ts.toDate();
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
 

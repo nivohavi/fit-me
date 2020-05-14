@@ -30,7 +30,6 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
 public abstract class RecipeRoomDatabase extends RoomDatabase {
 
     public static Date RoomLastUpdate;
-    private static FirebaseFirestore mFirestore;
     private static Query mQuery;
     private static DocumentReference ref;
     public abstract RecipeDao recipeDao();
@@ -39,11 +38,6 @@ public abstract class RecipeRoomDatabase extends RoomDatabase {
     static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
-    private static void initFirestore() {
-        mFirestore = FirebaseFirestore.getInstance();
-        // Get the 50 highest rated restaurants
-        mQuery = mFirestore.collection("restaurants").limit(500);
-    }
 
     static RecipeRoomDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
@@ -63,7 +57,6 @@ public abstract class RecipeRoomDatabase extends RoomDatabase {
         @Override
         public void onOpen(@NonNull SupportSQLiteDatabase db) {
             super.onOpen(db);
-            initFirestore();
             // If you want to keep data through app restarts,
             // comment out the following block
             databaseWriteExecutor.execute(() -> {

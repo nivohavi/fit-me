@@ -89,7 +89,7 @@ public class NewRecipeFragment extends Fragment {
                 {
                     String recipe_name = mEditRecipeView.getText().toString();
                     UUID generatedId = UUID.randomUUID();
-                    Recipe r = new Recipe(generatedId.toString(),recipe_name,"https://sdsadsa", pressed_category,"This is description","This is directions", "This is ingredientsJson",new Date());
+                    Recipe r = new Recipe(generatedId.toString(),recipe_name,"https://sdsadsa", "niv@gmail.com",pressed_category,"This is description","This is directions", "This is ingredientsJson",new Date());
 
                     // New Recipe Insertion - only to Firebase
                     mRecipeViewModel.insert(r);

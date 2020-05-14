@@ -114,10 +114,6 @@ public class RecipeViewModel extends AndroidViewModel {
             //loadRecipesByCategory(category);
             loadRecipes();
         }
-        //return recipes;
-        //TODO: return query
-        //recipes.getValue().removeIf(recipe -> (!recipe.getCategory().equals(category)));
-
         return mAllRecipes;
     }
 
@@ -137,9 +133,11 @@ public class RecipeViewModel extends AndroidViewModel {
         firestoreManager.getAllRecipesFirebase(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
+                if (task.isSuccessful())
+                {
                     List<Recipe> list = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
+                    for (QueryDocumentSnapshot document : task.getResult())
+                    {
                         Recipe r = new Recipe(document.getData());
                         if(r.getTimestamp().after(d))
                         {
@@ -149,8 +147,9 @@ public class RecipeViewModel extends AndroidViewModel {
                         list.add(r);
                     }
                     recipes.setValue(list);
-                    Log.d("Niv", list.toString());
-                } else {
+                }
+                else
+                {
                     Log.d("Niv", "Error getting documents: ", task.getException());
                 }
             }

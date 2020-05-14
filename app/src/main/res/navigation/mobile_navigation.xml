@@ -76,7 +76,6 @@
     <fragment
         android:id="@+id/navigation_edit_recipe"
         android:name="com.colman.fit_me.ui.recipes.EditRecipeFragment"
-        android:label="fragment_edit_recipe"
         tools:layout="@layout/fragment_edit_recipe" >
         <argument
             android:name="recipeObj"
