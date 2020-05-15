@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -13,6 +14,7 @@ import com.colman.fit_me.R;
 import com.colman.fit_me.RecyclerViewClickInterface;
 import com.colman.fit_me.model.Category;
 import com.colman.fit_me.model.Recipe;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +55,20 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         {
             Recipe current = mRecipes.get(position);
             holder.txtRecipeName.setText(current.getName());
+            holder.txtRecipeDescription.setText(current.getDescription());
+            Picasso.get().load(current.getImgURL()).into(holder.img, new com.squareup.picasso.Callback(){
+
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    //holder.img.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher_foreground));
+
+                }
+            });
         }
         else
         {
@@ -84,6 +100,8 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         // for any view that will be set as you render a row
         private int mCurrentPosition;
         TextView txtRecipeName;
+        TextView txtRecipeDescription;
+        ImageView img;
         CardView myCardView;
 
         // We also create a constructor that accepts the entire item row
@@ -94,7 +112,12 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
 
+            img = (ImageView) itemView.findViewById(R.id.imageView);
             txtRecipeName = (TextView) itemView.findViewById(R.id.txt_recipe_name);
+            txtRecipeDescription = (TextView) itemView.findViewById(R.id.txt_recipe_description);
+
+
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

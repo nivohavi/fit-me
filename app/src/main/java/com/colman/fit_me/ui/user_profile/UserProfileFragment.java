@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.colman.fit_me.LoginActivity;
+import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.R;
 import com.colman.fit_me.ui.home.HomeViewModel;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,25 +27,20 @@ public class UserProfileFragment extends Fragment {
     FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private HomeViewModel homeViewModel;
-    View view;
+    View root;
 
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("User Profile");
+
         userProfileViewModel =
                 ViewModelProviders.of(this).get(UserProfileViewModel.class);
 
-        // Get the specific view
-        View root = inflater.inflate(R.layout.fragment_user_profile, container, false);
 
-        // Change the TextView
-/*        final TextView textView = root.findViewById(R.id.text_dashboard);
-        userProfileViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });*/
+        // Get the specific view
+        root = inflater.inflate(R.layout.fragment_user_profile, container, false);
+
 
         // Logout button
         btnLogout = (Button) root.findViewById(R.id.logoutButton);

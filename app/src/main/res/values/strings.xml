@@ -8,6 +8,7 @@
     <string name="title_categories">Categories</string>
     <string name="hint_word">Recipe...</string>
     <string name="button_save">Save</string>
+    <string name="title_my_recipes">My Recipes</string>
     <string name="empty_not_saved">Recipe not saved because it is empty.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
