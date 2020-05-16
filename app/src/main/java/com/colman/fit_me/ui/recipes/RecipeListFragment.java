@@ -72,7 +72,7 @@ public class RecipeListFragment extends Fragment implements RecyclerViewClickInt
         recyclerView.setAdapter(adapter);
 
         mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
-        mRecipeViewModel.getRecipesByCategory(pressed_category).observe(this.getViewLifecycleOwner(), recipes -> {
+        mRecipeViewModel.getRecipes().observe(this.getViewLifecycleOwner(), recipes -> {
             recipes.removeIf(recipe -> (!recipe.getCategory().equals(pressed_category)));
             recipesList = recipes;
             adapter.setRecipes(recipes);

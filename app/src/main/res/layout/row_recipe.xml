@@ -21,14 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:cardCornerRadius="6dp">
 
-        <TextView
-            android:id="@+id/txt_imgURL"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:fontFamily="@font/alegreya_sans_sc_medium"
-            android:textAlignment="center"
-            android:textSize="24sp"
-            android:visibility="invisible" />
+
 
         <TextView
             android:id="@+id/txt_recipe_name"

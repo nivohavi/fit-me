@@ -93,7 +93,7 @@ public class CategoriesFragment extends Fragment implements RecyclerViewClickInt
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(getActivity() , categoriesList.get(position).name, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity() , categoriesList.get(position).name, Toast.LENGTH_SHORT).show();
 
         CategoriesFragmentDirections.ActionNavigationCategoriesToNavigationRecipeList action = CategoriesFragmentDirections.actionNavigationCategoriesToNavigationRecipeList(categoriesList.get(position).name);
         action.setCategory(categoriesList.get(position).name);

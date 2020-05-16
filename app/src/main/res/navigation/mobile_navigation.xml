@@ -81,6 +81,10 @@
             android:name="recipeObj"
             app:argType="com.colman.fit_me.model.Recipe"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_navigation_edit_recipe_to_navigation_my_recipes"
+            app:destination="@id/navigation_my_recipes"
+            app:popUpToInclusive="true" />
     </fragment>
 
 </navigation>

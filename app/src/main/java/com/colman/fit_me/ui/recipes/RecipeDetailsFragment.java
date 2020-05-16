@@ -38,7 +38,6 @@ public class RecipeDetailsFragment extends Fragment {
 
     View root;
     NavController nav;
-    private EditText mEditRecipeView;
     private Recipe r;
     private RecipeViewModel mRecipeViewModel;
     private TextView tv_recipe_name;
@@ -63,7 +62,6 @@ public class RecipeDetailsFragment extends Fragment {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_recipe_details, container, false);
         mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
-        //((MainActivity) getActivity()).getSupportActionBar().setTitle(pressed_category);
         r = RecipeDetailsFragmentArgs.fromBundle(getArguments()).getRecipeObj();
         ((MainActivity) getActivity()).getSupportActionBar().setTitle(r.getName());
 

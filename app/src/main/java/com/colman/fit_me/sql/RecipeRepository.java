@@ -28,14 +28,8 @@ import java.util.List;
 public class RecipeRepository {
 
     private RecipeDao mRecipeDao;
-    private RecipeRoomDatabase recipeRoomDatabase;
     private LiveData<List<Recipe>> mAllRecipes;
-    CollectionReference collectionReference;
-    private FirebaseQueryLiveData firebaseQueryLiveData;
-    private RecipeViewModel mRecipeViewModel;
     public static Date lud;
-    DocumentReference newRecipe;
-
 
 
     // Note that in order to unit test the RecipeRepository, you have to remove the Application
@@ -69,6 +63,11 @@ public class RecipeRepository {
         RecipeRoomDatabase.databaseWriteExecutor.execute(() -> {
             mRecipeDao.insert(recipe);
         });
+    }
 
+    public void delete(final Recipe recipe) {
+        RecipeRoomDatabase.databaseWriteExecutor.execute(() -> {
+            mRecipeDao.delete(recipe);
+        });
     }
 }

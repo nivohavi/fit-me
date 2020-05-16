@@ -3,6 +3,7 @@ package com.colman.fit_me.viewmodel;
 import android.app.Application;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -11,6 +12,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.RoomDatabase;
 
+import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.firebase.FirebaseQueryLiveData;
 import com.colman.fit_me.firebase.FirestoreManager;
 import com.colman.fit_me.model.Recipe;
@@ -22,6 +24,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -37,6 +40,8 @@ public class RecipeViewModel extends AndroidViewModel {
     private LiveData<List<Recipe>> mAllRecipes;
     private MutableLiveData<List<Recipe>> recipes;
     private FirestoreManager firestoreManager;
+    private DocumentReference recipeRef;
+
 
     private static final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("recipes");
     private final FirebaseQueryLiveData liveData = new FirebaseQueryLiveData(mDatabase);
@@ -87,13 +92,29 @@ public class RecipeViewModel extends AndroidViewModel {
         //
         // Add Recipe is only to FireBase - not to Room(SQL)
         //
-        fb.collection("recipes").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d("Niv", "XXXXXXXXXXXXXX -----  Success ----------- XXXXXXXXX");
-                RecipeRepository.lud = new Date();
-            }
-        });
+        fb.collection("recipes")
+                .whereEqualTo("id", id)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Recipe r = new Recipe(document.getData());
+                                fb.collection("recipes").document(document.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("Niv", "XXXXXXXXXXXXXX -----  DELETE RECIPE ----------- XXXXXXXXX");
+
+                                        // Delete from Room
+                                        mRepository.delete(r);
+                                    }
+                                });
+                            }
+                        } else {
+                        }
+                    }
+                });
 
         //mRepository.insert(recipe);
     }
