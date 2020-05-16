@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.dashboard.DashboardFragment">
+    tools:context=".ui.dashboard.DashboardFragment"
+    android:background="@color/backgroundColor">
 
     <TextView
         android:id="@+id/text_dashboard"
@@ -28,12 +29,18 @@
         android:layout_marginStart="162dp"
         android:layout_marginEnd="162dp"
         android:layout_marginBottom="100dp"
-        android:background="#FFFFFF"
-        android:backgroundTint="#03A9F4"
+        android:background="#f7dcc3"
         android:text="Logout"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/AppTheme"/>
+
+
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+

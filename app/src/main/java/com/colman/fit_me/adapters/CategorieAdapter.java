@@ -1,8 +1,10 @@
 package com.colman.fit_me.adapters;
 
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +16,7 @@ import com.colman.fit_me.R;
 import com.colman.fit_me.RecyclerViewClickInterface;
 import com.colman.fit_me.model.Category;
 import com.colman.fit_me.ui.ex_item.ExItemdFragment;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -49,7 +52,26 @@ public class CategorieAdapter extends RecyclerView.Adapter<CategorieAdapter.Cate
     @Override
     public void onBindViewHolder(CategorieViewHolder holder, int position)
     {
-        holder.txtCategorieName.setText(dataList.get(position).getName());
+        String categoryPressed = dataList.get(position).getName();
+        Resources res = holder.itemView.getContext().getResources();
+        holder.txtCategorieName.setText(categoryPressed);
+        switch(categoryPressed){
+            case "French":
+                holder.img.setImageDrawable(res.getDrawable(R.drawable.french));
+                break;
+            case "Italian":
+                holder.img.setImageDrawable(res.getDrawable(R.drawable.italian));
+                break;
+            case "Israeli":
+                holder.img.setImageDrawable(res.getDrawable(R.drawable.israeli));
+                break;
+            case "Mexican":
+                holder.img.setImageDrawable(res.getDrawable(R.drawable.mexican));
+                break;
+            case "Asian":
+                holder.img.setImageDrawable(res.getDrawable(R.drawable.asian));
+                break;
+        }
     }
 
     @Override
@@ -69,6 +91,7 @@ public class CategorieAdapter extends RecyclerView.Adapter<CategorieAdapter.Cate
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         private int mCurrentPosition;
+        ImageView img;
         TextView txtCategorieName;
         CardView myCardView;
 
@@ -79,7 +102,7 @@ public class CategorieAdapter extends RecyclerView.Adapter<CategorieAdapter.Cate
             super(itemView);
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
-
+            img = (ImageView) itemView.findViewById(R.id.imageView);
             txtCategorieName = (TextView) itemView.findViewById(R.id.txt_categorie_name);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -1,5 +1,6 @@
 package com.colman.fit_me.ui.categories;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +46,8 @@ public class CategoriesFragment extends Fragment implements RecyclerViewClickInt
     private RecyclerView recyclerView;
     private CategorieAdapter adapter;
     public static String categoryPressed;
+    private ImageView img_recipe;
+
 
 
     public CategoriesFragment() {
@@ -60,16 +64,17 @@ public class CategoriesFragment extends Fragment implements RecyclerViewClickInt
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Categories");
-        categoriesList.add(new Category("French"));
         categoriesList.add(new Category("Italian"));
         categoriesList.add(new Category("Israeli"));
+        categoriesList.add(new Category("Asian"));
         categoriesList.add(new Category("Mexican"));
-        categoriesList.add(new Category("Category 5"));
+        categoriesList.add(new Category("French"));
         categoriesList.add(new Category("Category 6"));
 
         root = inflater.inflate(R.layout.fragment_categories, container, false);
         recyclerView = root.findViewById(R.id.recycler_view);
         adapter = new CategorieAdapter(categoriesList, this);
+        img_recipe = root.findViewById(R.id.imageView);
 
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
