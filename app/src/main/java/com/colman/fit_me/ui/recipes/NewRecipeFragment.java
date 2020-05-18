@@ -24,6 +24,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.colman.fit_me.LoginActivity;
@@ -47,6 +48,8 @@ public class NewRecipeFragment extends Fragment {
     private EditText et_recipe_name,et_recipe_description,et_recipe_ing,et_recipe_directions;
     private String recipe_name,recipe_description,recipe_ing,recipe_directions;
     private ImageView img_recipe;
+    private ProgressBar progressBar;
+
 
     private Button btnChoose;
 
@@ -79,6 +82,7 @@ public class NewRecipeFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
         nav = NavHostFragment.findNavController(this);
+        progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
         et_recipe_name = (EditText)view.findViewById(R.id.edit_recipe_name);
         et_recipe_description = (EditText)view.findViewById(R.id.edit_recipe_description);
         et_recipe_ing = (EditText)view.findViewById(R.id.edit_recipe_ing);
@@ -106,38 +110,50 @@ public class NewRecipeFragment extends Fragment {
         super.onCreateOptionsMenu(menu, menuInflater);
     }
 
+    int count = 0;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId())
         {
             case R.id.submit_button:
-                String newID = mRecipeViewModel.getFirebaseId();
-                Recipe r = new Recipe(newID,et_recipe_name.getText().toString(),"placeholder", LoginActivity.mFirebaseUser.getEmail(),pressed_category,et_recipe_description.getText().toString(),et_recipe_directions.getText().toString(),et_recipe_ing.getText().toString(),new Date());
-                if (!checkForm())
+                if (count == 0)
                 {
-                    Toast.makeText(getActivity(),"Not all fields were filled",Toast.LENGTH_SHORT).show();
+                    count++;
+                    progressBar.setVisibility(item.getActionView().VISIBLE);
+                    String newID = mRecipeViewModel.getFirebaseId();
+                    Recipe r = new Recipe(newID,et_recipe_name.getText().toString(),"placeholder", LoginActivity.mFirebaseUser.getEmail(),pressed_category,et_recipe_description.getText().toString(),et_recipe_directions.getText().toString(),et_recipe_ing.getText().toString(),new Date());
+                    if (!checkForm())
+                    {
+                        Toast.makeText(getActivity(),"Not all fields were filled",Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    // Here will be image upload
+                    mRecipeViewModel.uploadImage(r.getId(), filePath, new RecipeViewModel.MyCallback() {
+                        @Override
+                        public void onDataGot(String string) {
+                            // New Recipe Insertion - only to Firebase
+                            r.setImgURL(string);
+                            mRecipeViewModel.insert(r, new RecipeViewModel.MyCallback() {
+                                @Override
+                                public void onDataGot(String string) {
+                                    NewRecipeFragmentDirections.ActionNavigationNewRecipeToNavigationRecipeList action = NewRecipeFragmentDirections.actionNavigationNewRecipeToNavigationRecipeList(r.getCategory());
+                                    nav.navigate(action, new NavOptions.Builder().setPopUpTo(R.id.navigation_recipe_list,true).build());
+                                    progressBar.setVisibility(item.getActionView().INVISIBLE);
+                                    count=0;
+                                    //nav.popBackStack(R.id.navigation_recipe_list, true);
+
+                                }
+                            });
+
+                        }
+                    });
+
+                }
+                else {
+                    Toast.makeText(getActivity(),"Uploading...",Toast.LENGTH_SHORT).show();
                     break;
                 }
-                // Here will be image upload
-                mRecipeViewModel.uploadImage(r.getId(), filePath, new RecipeViewModel.MyCallback() {
-                    @Override
-                    public void onDataGot(String string) {
-                        // New Recipe Insertion - only to Firebase
-                        r.setImgURL(string);
-                        mRecipeViewModel.insert(r, new RecipeViewModel.MyCallback() {
-                            @Override
-                            public void onDataGot(String string) {
-                                NewRecipeFragmentDirections.ActionNavigationNewRecipeToNavigationRecipeList action = NewRecipeFragmentDirections.actionNavigationNewRecipeToNavigationRecipeList(r.getCategory());
-                                nav.navigate(action, new NavOptions.Builder().setPopUpTo(R.id.navigation_recipe_list,true).build());
-                                //nav.popBackStack(R.id.navigation_recipe_list, true);
-
-                            }
-                        });
-
-                    }
-                });
-
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -155,6 +171,8 @@ public class NewRecipeFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        // TODO: Fix when not picking picture
         if(requestCode == PICK_IMAGE_REQUEST
                 && data != null && data.getData() != null )
         {
