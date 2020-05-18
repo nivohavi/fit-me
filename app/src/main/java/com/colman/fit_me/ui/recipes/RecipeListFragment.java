@@ -126,7 +126,6 @@ public class RecipeListFragment extends Fragment implements RecyclerViewClickInt
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        //((MainActivity) getActivity()).getSupportActionBar().setTitle("Categories");
     }
 
 

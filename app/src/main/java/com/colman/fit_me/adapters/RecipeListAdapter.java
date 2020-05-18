@@ -65,7 +65,6 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
 
                 @Override
                 public void onError(Exception e) {
-                    //holder.img.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher_foreground));
 
                 }
             });

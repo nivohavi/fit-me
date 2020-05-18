@@ -49,9 +49,6 @@ class Constants {
 public class RecipeViewModel extends AndroidViewModel {
 
     private final String REFERENCE_URL = "gs://matkon-5d8d7.appspot.com";
-    private final String SAVE_INSTANCE_KEY = "reference";
-    private final String UPLOAD_FILE_NAME = "upload.jpg";
-    private final String FILE_PATH = "image/default.jpg";
     private StorageReference storageRef;
     private UploadTask uploadTask;
 
@@ -62,7 +59,6 @@ public class RecipeViewModel extends AndroidViewModel {
     private LiveData<List<Recipe>> mAllRecipes;
     private MutableLiveData<List<Recipe>> recipes;
     private FirestoreManager firestoreManager;
-    private DocumentReference recipeRef;
 
 
     private static final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("recipes");
@@ -119,8 +115,6 @@ public class RecipeViewModel extends AndroidViewModel {
         //
         // Update Recipe is only to FireBase - not to Room(SQL)
         //
-        //String firestoreGeneratedId = fb.collection("recipes").document().getId();
-        //recipe.setId(firestoreGeneratedId);
         fb.collection("recipes").document(recipe.getId()).set(recipe).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -162,23 +156,6 @@ public class RecipeViewModel extends AndroidViewModel {
                 });
             }
         });
-
-/*        // Register observers to listen for when the download is done or if it fails
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-                taskSnapshot.getMetadata();
-                storageRef.getDownloadUrl();
-                callback.onDataGot(taskSnapshot.getMetadata().getCustomMetadata(""));
-            }
-        });*/
     }
 
 
@@ -194,7 +171,6 @@ public class RecipeViewModel extends AndroidViewModel {
     public LiveData<List<Recipe>> getRecipesByCategory(String category) {
         if (recipes == null) {
             recipes = new MutableLiveData<List<Recipe>>();
-            //loadRecipesByCategory(category);
             loadRecipes();
         }
         return mAllRecipes;
