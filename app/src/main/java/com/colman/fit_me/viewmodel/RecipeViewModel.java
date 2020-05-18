@@ -1,7 +1,9 @@
 package com.colman.fit_me.viewmodel;
 
 import android.app.Application;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import com.colman.fit_me.model.Recipe;
 import com.colman.fit_me.sql.RecipeRepository;
 import com.colman.fit_me.sql.RecipeRoomDatabase;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -28,14 +31,33 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+class Constants {
+
+    public static final String STORAGE_PATH_UPLOADS = "uploads/";
+    public static final String DATABASE_PATH_UPLOADS = "uploads";
+}
 
 public class RecipeViewModel extends AndroidViewModel {
 
+    private final String REFERENCE_URL = "gs://matkon-5d8d7.appspot.com";
+    private final String SAVE_INSTANCE_KEY = "reference";
+    private final String UPLOAD_FILE_NAME = "upload.jpg";
+    private final String FILE_PATH = "image/default.jpg";
+    private StorageReference storageRef;
+    private UploadTask uploadTask;
+
+
     private FirebaseFirestore fb;
+    private FirebaseStorage fbStorage;
     private RecipeRepository mRepository;
     private LiveData<List<Recipe>> mAllRecipes;
     private MutableLiveData<List<Recipe>> recipes;
@@ -53,6 +75,8 @@ public class RecipeViewModel extends AndroidViewModel {
         mRepository = new RecipeRepository(application);
         mAllRecipes = mRepository.getAllRecipes();
         firestoreManager = FirestoreManager.newInstance();
+        fbStorage = FirebaseStorage.getInstance();
+        storageRef = fbStorage.getReferenceFromUrl(REFERENCE_URL);
     }
 
     public RecipeViewModel (){
@@ -71,52 +95,90 @@ public class RecipeViewModel extends AndroidViewModel {
         return mAllRecipes;
     }
 
-    public void insert(Recipe recipe)
+    public void update(Map<String, Object> data,MyCallback callback)
+    {
+        String recipeId = data.get("id").toString();
+        mRepository.delete(recipeId);
+        fb.collection("recipes").document(recipeId).update(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
+                callback.onDataGot("Success");
+            }
+        });
+    }
+
+
+    public String getFirebaseId(){
+        return fb.collection("recipes").document().getId();
+    }
+
+
+    public void insert(Recipe recipe, MyCallback callback)
     {
         //
-        // Add Recipe is only to FireBase - not to Room(SQL)
+        // Update Recipe is only to FireBase - not to Room(SQL)
         //
-        fb.collection("recipes").document().set(recipe).addOnSuccessListener(new OnSuccessListener<Void>() {
+        //String firestoreGeneratedId = fb.collection("recipes").document().getId();
+        //recipe.setId(firestoreGeneratedId);
+        fb.collection("recipes").document(recipe.getId()).set(recipe).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Log.d("Niv", "XXXXXXXXXXXXXX -----  Success ----------- XXXXXXXXX");
                 RecipeRepository.lud = new Date();
+                callback.onDataGot("Inserted");
+            }
+        });
+    }
+
+    public void delete(String id,MyCallback callback)
+    {
+
+        fb.collection("recipes").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                mRepository.delete(id);
+                callback.onDataGot("Deleted");
+            }
+        });
+    }
+
+
+    public void uploadImage(String id, Uri imagePath , MyCallback callback)
+    {
+        storageRef = fbStorage.getReference();
+        StorageReference recipeImgRef = storageRef.child("images/"+imagePath.getLastPathSegment());
+        uploadTask = recipeImgRef.putFile(imagePath);
+
+
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                recipeImgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        callback.onDataGot(uri.toString());
+                    }
+                });
             }
         });
 
-        //mRepository.insert(recipe);
-    }
-
-    public void delete(String id)
-    {
-        //
-        // Add Recipe is only to FireBase - not to Room(SQL)
-        //
-        fb.collection("recipes")
-                .whereEqualTo("id", id)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Recipe r = new Recipe(document.getData());
-                                fb.collection("recipes").document(document.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d("Niv", "XXXXXXXXXXXXXX -----  DELETE RECIPE ----------- XXXXXXXXX");
-
-                                        // Delete from Room
-                                        mRepository.delete(r);
-                                    }
-                                });
-                            }
-                        } else {
-                        }
-                    }
-                });
-
-        //mRepository.insert(recipe);
+/*        // Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                // ...
+                taskSnapshot.getMetadata();
+                storageRef.getDownloadUrl();
+                callback.onDataGot(taskSnapshot.getMetadata().getCustomMetadata(""));
+            }
+        });*/
     }
 
 
@@ -176,4 +238,11 @@ public class RecipeViewModel extends AndroidViewModel {
             }
         });
     }
+
+    public interface MyCallback {
+
+        void onDataGot(String string);
+    }
+
+
 }

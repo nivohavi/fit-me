@@ -70,4 +70,11 @@ public class RecipeRepository {
             mRecipeDao.delete(recipe);
         });
     }
+
+    public void delete(final String id) {
+        RecipeRoomDatabase.databaseWriteExecutor.execute(() -> {
+            mRecipeDao.delete(id);
+        });
+    }
+
 }

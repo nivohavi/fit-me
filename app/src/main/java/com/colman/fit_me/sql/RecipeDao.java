@@ -6,6 +6,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.colman.fit_me.model.Recipe;
 import com.google.firebase.firestore.auth.User;
@@ -32,6 +33,9 @@ public interface RecipeDao {
 
     @Delete
     void delete(Recipe recipe);
+
+    @Query("DELETE FROM recipe_table WHERE id = (:id)")
+    void delete(String id);
 
     @Query("DELETE FROM recipe_table")
     void deleteAll();

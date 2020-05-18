@@ -21,7 +21,12 @@ import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.R;
 import com.colman.fit_me.model.Recipe;
 import com.colman.fit_me.viewmodel.RecipeViewModel;
+import com.google.firebase.Timestamp;
 import com.squareup.picasso.Picasso;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,6 +36,7 @@ public class EditRecipeFragment extends Fragment {
     View root;
     NavController nav;
     private Recipe r;
+    private Map<String, Object> data;
     private RecipeViewModel mRecipeViewModel;
     private EditText et_recipe_name,et_recipe_description,et_recipe_ing,et_recipe_directions;
     private ImageView img_recipe;
@@ -47,6 +53,7 @@ public class EditRecipeFragment extends Fragment {
         root = inflater.inflate(R.layout.fragment_edit_recipe, container, false);
         mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
         r = RecipeDetailsFragmentArgs.fromBundle(getArguments()).getRecipeObj();
+        data = new HashMap<>();
         ((MainActivity) getActivity()).getSupportActionBar().setTitle(r.getName());
 
 
@@ -58,10 +65,16 @@ public class EditRecipeFragment extends Fragment {
 
         nav = NavHostFragment.findNavController(this);
         et_recipe_name = (EditText)view.findViewById(R.id.edit_recipe_name);
-        et_recipe_description = view.findViewById(R.id.edit_recipe_description);
-        et_recipe_ing = view.findViewById(R.id.edit_recipe_ing);
-        et_recipe_directions = view.findViewById(R.id.edit_recipe_directions);
+        et_recipe_description = (EditText)view.findViewById(R.id.edit_recipe_description);
+        et_recipe_ing = (EditText)view.findViewById(R.id.edit_recipe_ing);
+        et_recipe_directions = (EditText)view.findViewById(R.id.edit_recipe_directions);
         img_recipe = view.findViewById(R.id.img_recipe);
+        img_recipe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
 
         et_recipe_name.setText(r.getName());
@@ -105,10 +118,28 @@ public class EditRecipeFragment extends Fragment {
         switch (item.getItemId())
         {
             case R.id.delete_button:
-                // TODO put your code here to respond to the button tap
-                Toast.makeText(getActivity(), "Delete", Toast.LENGTH_SHORT).show();
-                mRecipeViewModel.delete(r.getId());
-                nav.navigate(R.id.action_navigation_edit_recipe_to_navigation_my_recipes);
+                mRecipeViewModel.delete(r.getId(), new RecipeViewModel.MyCallback() {
+                    @Override
+                    public void onDataGot(String string) {
+                        nav.navigate(R.id.action_navigation_edit_recipe_to_navigation_my_recipes);
+                    }
+                });
+                return true;
+            case R.id.save_button:
+                data.put("id",r.getId());
+                data.put("name",et_recipe_name.getText().toString());
+                data.put("category",r.getCategory());
+                data.put("description",et_recipe_description.getText().toString());
+                data.put("directions",et_recipe_directions.getText().toString());
+                data.put("ingredientsJson",et_recipe_ing.getText().toString());
+                data.put("imgURL",r.getImgURL());
+                data.put("timestamp",new Timestamp(new Date()));
+                mRecipeViewModel.update(data, new RecipeViewModel.MyCallback() {
+                    @Override
+                    public void onDataGot(String string) {
+                        nav.navigate(R.id.action_navigation_edit_recipe_to_navigation_my_recipes);
+                    }
+                });
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

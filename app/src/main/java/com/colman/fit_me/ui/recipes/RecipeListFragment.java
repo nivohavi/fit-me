@@ -129,4 +129,5 @@ public class RecipeListFragment extends Fragment implements RecyclerViewClickInt
         //((MainActivity) getActivity()).getSupportActionBar().setTitle("Categories");
     }
 
+
 }
