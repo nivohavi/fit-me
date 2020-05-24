@@ -95,6 +95,7 @@ public class RecipeViewModel extends AndroidViewModel {
     {
         String recipeId = data.get("id").toString();
         mRepository.delete(recipeId);
+        RecipeRepository.lud = new Date();
         fb.collection("recipes").document(recipeId).update(data).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

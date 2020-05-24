@@ -51,6 +51,7 @@ public class NewRecipeFragment extends Fragment {
     private final int PICK_IMAGE_REQUEST = 71;
     private String pressed_category;
     private RecipeViewModel mRecipeViewModel;
+    int count = 0;
 
 
 
@@ -101,7 +102,6 @@ public class NewRecipeFragment extends Fragment {
         super.onCreateOptionsMenu(menu, menuInflater);
     }
 
-    int count = 0;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 

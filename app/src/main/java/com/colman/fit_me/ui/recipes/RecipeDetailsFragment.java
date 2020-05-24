@@ -64,6 +64,7 @@ public class RecipeDetailsFragment extends Fragment {
         mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
         r = RecipeDetailsFragmentArgs.fromBundle(getArguments()).getRecipeObj();
         ((MainActivity) getActivity()).getSupportActionBar().setTitle(r.getName());
+        MainActivity.mainProgressBar.setVisibility(View.VISIBLE);
 
 
         return root;
@@ -89,7 +90,7 @@ public class RecipeDetailsFragment extends Fragment {
 
             @Override
             public void onSuccess() {
-
+                MainActivity.mainProgressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -97,6 +98,8 @@ public class RecipeDetailsFragment extends Fragment {
                 if(isAdded())
                 {
                     img_recipe.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher_foreground));
+                    MainActivity.mainProgressBar.setVisibility(View.INVISIBLE);
+
                 }
 
             }

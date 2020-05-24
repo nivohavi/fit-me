@@ -32,6 +32,7 @@ import com.colman.fit_me.ui.home.HomeViewModel;
 import com.colman.fit_me.ui.recipes.NewRecipeFragmentDirections;
 import com.colman.fit_me.viewmodel.RecipeViewModel;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
@@ -45,7 +46,9 @@ public class UserProfileFragment extends Fragment {
     private TextView txt_user_email;
     private final int PICK_IMAGE_REQUEST = 71;
     private ProgressBar progressBar;
-
+    FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+    public static FirebaseUser mFirebaseUser;
     private ImageView img_user;
     private Uri filePath;
     View root;
@@ -56,19 +59,27 @@ public class UserProfileFragment extends Fragment {
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("My Profile");
 
         userProfileViewModel = new ViewModelProvider(this).get(UserProfileViewModel.class);
+        mFirebaseAuth = FirebaseAuth.getInstance();
 
 
 
         // Get the specific view
         root = inflater.inflate(R.layout.fragment_user_profile, container, false);
-
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                mFirebaseUser = mFirebaseAuth.getCurrentUser();
+                if( mFirebaseUser == null ) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+            }
+        };
 
         return root;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
         txt_user_email = (TextView)view.findViewById(R.id.txt_user_email);
         txt_user_email.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         img_user = (ImageView)view.findViewById(R.id.profile_image);
@@ -84,12 +95,14 @@ public class UserProfileFragment extends Fragment {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressBar.setVisibility(v.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
                 FirebaseAuth.getInstance().signOut();
                 Intent intToMain = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intToMain);
-                progressBar.setVisibility(v.INVISIBLE);
+
+
             }
+
         });
     }
 

@@ -5,6 +5,7 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.colman.fit_me.ui.categories.CategoriesFragment;
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity{
 
     AppBarConfiguration appBarConfiguration;
     private RecipeViewModel mWordViewModel;
-
+    public static ProgressBar mainProgressBar;
 
     @SuppressLint("WrongConstant")
     @Override
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity{
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
+        mainProgressBar = findViewById(R.id.progressBar);
 
 
 

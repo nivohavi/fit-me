@@ -61,10 +61,13 @@ public class CategoriesFragment extends Fragment implements RecyclerViewClickInt
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
         nav = NavHostFragment.findNavController(this);
+        MainActivity.mainProgressBar.setVisibility(view.INVISIBLE);
+
     }
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        MainActivity.mainProgressBar.setVisibility(View.VISIBLE);
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Categories");
         categoriesList.add(new Category("Italian"));
         categoriesList.add(new Category("Israeli"));
@@ -82,6 +85,7 @@ public class CategoriesFragment extends Fragment implements RecyclerViewClickInt
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        //MainActivity.mainProgressBar.setVisibility(View.INVISIBLE);
         return root;
     }
 
@@ -98,7 +102,6 @@ public class CategoriesFragment extends Fragment implements RecyclerViewClickInt
         CategoriesFragmentDirections.ActionNavigationCategoriesToNavigationRecipeList action = CategoriesFragmentDirections.actionNavigationCategoriesToNavigationRecipeList(categoriesList.get(position).name);
         action.setCategory(categoriesList.get(position).name);
         nav.navigate(action);
-
     }
 
     @Override
