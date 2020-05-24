@@ -44,21 +44,12 @@ public class NewRecipeFragment extends Fragment {
     private static final int RESULT_OK = 1;
     View root;
     NavController nav;
-    private EditText mEditRecipeView;
     private EditText et_recipe_name,et_recipe_description,et_recipe_ing,et_recipe_directions;
-    private String recipe_name,recipe_description,recipe_ing,recipe_directions;
     private ImageView img_recipe;
-    private ProgressBar progressBar;
-
-
-    private Button btnChoose;
-
     private Uri filePath;
-
+    private ProgressBar progressBar;
     private final int PICK_IMAGE_REQUEST = 71;
-
     private String pressed_category;
-
     private RecipeViewModel mRecipeViewModel;
 
 
@@ -147,7 +138,6 @@ public class NewRecipeFragment extends Fragment {
                                         nav.navigate(action, new NavOptions.Builder().setPopUpTo(R.id.navigation_recipe_list,true).build());
                                         progressBar.setVisibility(item.getActionView().INVISIBLE);
                                         count=0;
-                                        //nav.popBackStack(R.id.navigation_recipe_list, true);
                                     }
                                 });
 
