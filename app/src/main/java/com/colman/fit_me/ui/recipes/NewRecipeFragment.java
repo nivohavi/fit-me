@@ -126,29 +126,33 @@ public class NewRecipeFragment extends Fragment {
                     if (!checkForm())
                     {
                         Toast.makeText(getActivity(),"Not all fields were filled",Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(item.getActionView().INVISIBLE);
+                        count=0;
                         break;
                     }
                     // Here will be image upload
-                    mRecipeViewModel.uploadImage(r.getId(), filePath, new RecipeViewModel.MyCallback() {
-                        @Override
-                        public void onDataGot(String string) {
-                            // New Recipe Insertion - only to Firebase
-                            r.setImgURL(string);
-                            mRecipeViewModel.insert(r, new RecipeViewModel.MyCallback() {
-                                @Override
-                                public void onDataGot(String string) {
-                                    NewRecipeFragmentDirections.ActionNavigationNewRecipeToNavigationRecipeList action = NewRecipeFragmentDirections.actionNavigationNewRecipeToNavigationRecipeList(r.getCategory());
-                                    nav.navigate(action, new NavOptions.Builder().setPopUpTo(R.id.navigation_recipe_list,true).build());
-                                    progressBar.setVisibility(item.getActionView().INVISIBLE);
-                                    count=0;
-                                    //nav.popBackStack(R.id.navigation_recipe_list, true);
+                    Uri path = Uri.parse("android.resource://com.colman.fit_me/" + R.drawable.recipe_placeholder);
+                    if(filePath == null) {
+                        filePath = path;
+                    }
+                        mRecipeViewModel.uploadImage(r.getId(), filePath, new RecipeViewModel.MyCallback() {
+                            @Override
+                            public void onDataGot(String string) {
+                                // New Recipe Insertion - only to Firebase
+                                r.setImgURL(string);
+                                mRecipeViewModel.insert(r, new RecipeViewModel.MyCallback() {
+                                    @Override
+                                    public void onDataGot(String string) {
+                                        NewRecipeFragmentDirections.ActionNavigationNewRecipeToNavigationRecipeList action = NewRecipeFragmentDirections.actionNavigationNewRecipeToNavigationRecipeList(r.getCategory());
+                                        nav.navigate(action, new NavOptions.Builder().setPopUpTo(R.id.navigation_recipe_list,true).build());
+                                        progressBar.setVisibility(item.getActionView().INVISIBLE);
+                                        count=0;
+                                        //nav.popBackStack(R.id.navigation_recipe_list, true);
+                                    }
+                                });
 
-                                }
-                            });
-
-                        }
-                    });
-
+                            }
+                        });
                 }
                 else {
                     Toast.makeText(getActivity(),"Uploading...",Toast.LENGTH_SHORT).show();
