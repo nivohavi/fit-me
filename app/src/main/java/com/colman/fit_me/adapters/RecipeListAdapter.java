@@ -56,18 +56,25 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
             Recipe current = mRecipes.get(position);
             holder.txtRecipeName.setText(current.getName());
             holder.txtRecipeDescription.setText(current.getDescription());
-            Picasso.get().load(current.getImgURL()).into(holder.img, new com.squareup.picasso.Callback(){
+            if(!current.getImgURL().equals(""))
+            {
+                Picasso.get().load(current.getImgURL()).into(holder.img, new com.squareup.picasso.Callback(){
 
-                @Override
-                public void onSuccess() {
+                    @Override
+                    public void onSuccess() {
 
-                }
+                    }
 
-                @Override
-                public void onError(Exception e) {
+                    @Override
+                    public void onError(Exception e) {
+                    }
+                });
+            }
+            else
+            {
+                Picasso.get().load(R.drawable.ic_launcher_foreground).into(holder.img);
+            }
 
-                }
-            });
         }
         else
         {

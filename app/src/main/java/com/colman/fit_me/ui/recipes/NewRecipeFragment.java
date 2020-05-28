@@ -122,10 +122,23 @@ public class NewRecipeFragment extends Fragment {
                         break;
                     }
                     // Here will be image upload
-                    Uri path = Uri.parse("android.resource://com.colman.fit_me/" + R.drawable.recipe_placeholder);
-                    if(filePath == null) {
-                        filePath = path;
+                    //Uri path = Uri.parse("android.resource://com.colman.fit_me/" + R.drawable.recipe_placeholder);
+                    if(filePath == null)
+                    {
+                        //filePath = path;
+                        r.setImgURL("https://i1.wp.com/ilikeweb.co.za/wp-content/uploads/2019/07/placeholder.png");
+                        mRecipeViewModel.insert(r, new RecipeViewModel.MyCallback() {
+                            @Override
+                            public void onDataGot(String string) {
+                                NewRecipeFragmentDirections.ActionNavigationNewRecipeToNavigationRecipeList action = NewRecipeFragmentDirections.actionNavigationNewRecipeToNavigationRecipeList(r.getCategory());
+                                nav.navigate(action, new NavOptions.Builder().setPopUpTo(R.id.navigation_recipe_list,true).build());
+                                progressBar.setVisibility(item.getActionView().INVISIBLE);
+                                count=0;
+                            }
+                        });
                     }
+                    else
+                    {
                         mRecipeViewModel.uploadImage(r.getId(), filePath, new RecipeViewModel.MyCallback() {
                             @Override
                             public void onDataGot(String string) {
@@ -143,6 +156,7 @@ public class NewRecipeFragment extends Fragment {
 
                             }
                         });
+                    }
                 }
                 else {
                     Toast.makeText(getActivity(),"Uploading...",Toast.LENGTH_SHORT).show();

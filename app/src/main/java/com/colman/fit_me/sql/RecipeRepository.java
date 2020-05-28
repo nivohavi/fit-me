@@ -99,6 +99,12 @@ public class RecipeRepository {
         });
     }
 
+    public void update(final Recipe recipe) {
+        RecipeRoomDatabase.databaseWriteExecutor.execute(() -> {
+            mRecipeDao.update(recipe);
+        });
+    }
+
     public void delete(final String id) {
         RecipeRoomDatabase.databaseWriteExecutor.execute(() -> {
             mRecipeDao.delete(id);

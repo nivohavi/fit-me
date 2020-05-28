@@ -38,6 +38,7 @@ public class SignUpActivity extends AppCompatActivity {
         password = findViewById(R.id.signup_password);
         signUpButton = findViewById(R.id.signUpButton);
         tvSignIn = findViewById(R.id.tvSignIn);
+        pgsBar = findViewById(R.id.progress_circular);
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override

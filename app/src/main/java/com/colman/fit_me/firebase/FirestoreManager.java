@@ -63,7 +63,7 @@ public class FirestoreManager {
         lastupdateCollectionReference.document("lud").get().addOnCompleteListener(onCompleteListener);
     }
 
-    public void updateRecipeFirebase(Recipe recipe) {
+/*    public void updateRecipeFirebase(Recipe recipe) {
         String documentId = recipe.getId();
         DocumentReference documentReference = recipesCollectionReference.document(documentId);
         documentReference.set(recipe);
@@ -72,5 +72,5 @@ public class FirestoreManager {
     public void deleteRecipe(String documentId) {
         DocumentReference documentReference = recipesCollectionReference.document(documentId);
         documentReference.delete();
-    }
+    }*/
 }

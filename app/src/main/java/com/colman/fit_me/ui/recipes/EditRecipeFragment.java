@@ -94,24 +94,30 @@ public class EditRecipeFragment extends Fragment {
         et_recipe_description.setText(r.getDescription());
         et_recipe_ing.setText(r.getIngredientsJson());
         et_recipe_directions.setText(r.getDirections());
-        Picasso.get().load(r.getImgURL()).into(img_recipe, new com.squareup.picasso.Callback(){
 
-            @Override
-            public void onSuccess() {
+        if(!r.getImgURL().equals(""))
+        {
+            Picasso.get().load(r.getImgURL()).into(img_recipe, new com.squareup.picasso.Callback(){
 
-            }
+                @Override
+                public void onSuccess() {
 
-            @Override
-            public void onError(Exception e) {
-                if(isAdded())
-                {
-                    img_recipe.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher_foreground));
                 }
 
-            }
-        });
+                @Override
+                public void onError(Exception e) {
+                    if(isAdded())
+                    {
+                        img_recipe.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher_foreground));
+                    }
 
-
+                }
+            });
+        }
+        else
+        {
+            Picasso.get().load(R.drawable.ic_launcher_foreground).into(img_recipe);
+        }
     }
 
     @Override

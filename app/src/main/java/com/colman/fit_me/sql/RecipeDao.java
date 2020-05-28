@@ -31,6 +31,9 @@ public interface RecipeDao {
     @Insert
     void insertAll(Recipe... users);
 
+    @Update
+    void update(Recipe recipe);
+
     @Delete
     void delete(Recipe recipe);
 

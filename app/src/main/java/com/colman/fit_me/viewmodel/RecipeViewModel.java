@@ -28,6 +28,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -205,22 +206,53 @@ public class RecipeViewModel extends AndroidViewModel {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
+                if (e != null)
+                {
                     Log.w("Niv", "Listen failed.", e);
                     return;
                 }
                 List<Recipe> list = new ArrayList<>();
-                for (QueryDocumentSnapshot document : value)
+                for (DocumentChange dc : value.getDocumentChanges())
                 {
+                    Recipe r = new Recipe(dc.getDocument().getData());
+                    switch (dc.getType())
+                    {
+                        case ADDED:
+                            mRepository.insert(r);
+                            list.add(r);
+                            break;
+                        case MODIFIED:
+                            mRepository.update(r);
+                            list.forEach(recipe -> {
+                                if(recipe.getId() == r.getId())
+                                {
+                                    recipe.setName(r.getName());
+                                    recipe.setDescription(r.getDescription());
+                                    recipe.setDirections(r.getDirections());
+                                    recipe.setImgURL(r.getImgURL());
+                                    recipe.setIngredientsJson(r.getIngredientsJson());
+                                }
+                            });
+                            break;
+                        case REMOVED:
+                            mRepository.delete(r);
+                            break;
+                    }
+                }
+
+/*                for (QueryDocumentSnapshot document : value)
+                {
+
                     Recipe r = new Recipe(document.getData());
                     //mRepository.recipeExists(r.getId());
                     if(r.getTimestamp().after(d))
                     {
                         // Insert to SQL (Room)
+                        //mRepository.insert(r);
                         mRepository.insert(r);
                     }
                     list.add(r);
-                }
+                }*/
                 recipes.setValue(list);
             }
         });
