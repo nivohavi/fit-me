@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.colman.fit_me.LoginActivity;
 import com.colman.fit_me.MainActivity;
@@ -44,6 +45,8 @@ public class MyRecipesFragment extends Fragment implements RecyclerViewClickInte
     private RecyclerView recyclerView;
     private MyRecipesListAdapter adapter;
     private RecipeViewModel mRecipeViewModel;
+    private TextView tv_no_data;
+
     View root;
     List<Recipe> recipesList =new ArrayList<>();
     private String pressed_category;
@@ -63,6 +66,7 @@ public class MyRecipesFragment extends Fragment implements RecyclerViewClickInte
         root = inflater.inflate(R.layout.fragment_my_recipes, container, false);
         recyclerView = root.findViewById(R.id.recycler_view);
         adapter = new MyRecipesListAdapter(recipesList, this);
+        tv_no_data = root.findViewById(R.id.tv_no_data);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -73,8 +77,16 @@ public class MyRecipesFragment extends Fragment implements RecyclerViewClickInte
             recipes.removeIf(recipe ->
                     (recipe.createdBy == null || (!recipe.createdBy.equals(email)))
             );
-            recipesList = recipes;
+            if(!recipes.isEmpty()){
+                tv_no_data.setVisibility(View.INVISIBLE);
+                recipesList = recipes;
+                //adapter.notifyDataSetChanged();
+            }
+            else{
+                tv_no_data.setVisibility(View.VISIBLE);
+            }
             adapter.setRecipes(recipes);
+            MainActivity.mainProgressBar.setVisibility(View.INVISIBLE);
         });
 
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("My Recipes");

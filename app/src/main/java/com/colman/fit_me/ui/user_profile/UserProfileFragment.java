@@ -80,6 +80,7 @@ public class UserProfileFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
         txt_user_email = (TextView)view.findViewById(R.id.txt_user_email);
         txt_user_email.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         img_user = (ImageView)view.findViewById(R.id.profile_image);
@@ -95,12 +96,11 @@ public class UserProfileFragment extends Fragment {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(v.VISIBLE);
                 FirebaseAuth.getInstance().signOut();
                 Intent intToMain = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intToMain);
-
-
+                progressBar.setVisibility(v.INVISIBLE);
             }
 
         });

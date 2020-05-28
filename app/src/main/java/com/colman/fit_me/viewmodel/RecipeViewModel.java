@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -28,7 +29,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -79,18 +82,6 @@ public class RecipeViewModel extends AndroidViewModel {
         super(null);
     }
 
-
-    @NonNull
-    public LiveData<DataSnapshot> getdataSnapshotLiveData(){
-        return liveData;
-    }
-
-
-    public LiveData<List<Recipe>> getAllRecipes()
-    {
-        return mAllRecipes;
-    }
-
     public void update(Map<String, Object> data,MyCallback callback)
     {
         String recipeId = data.get("id").toString();
@@ -132,7 +123,7 @@ public class RecipeViewModel extends AndroidViewModel {
         fb.collection("recipes").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                mRepository.delete(id);
+                mRepository.deleteAllRecipes();
                 callback.onDataGot("Deleted");
             }
         });
@@ -169,18 +160,10 @@ public class RecipeViewModel extends AndroidViewModel {
         return mAllRecipes;
     }
 
-    public LiveData<List<Recipe>> getRecipesByCategory(String category) {
-        if (recipes == null) {
-            recipes = new MutableLiveData<List<Recipe>>();
-            loadRecipes();
-        }
-        return mAllRecipes;
-    }
 
     private void loadRecipes() {
 
         // 1. Get from local DB the last update DateTime of specific (each Category is row from local DB)
-        Date d = RecipeRepository.lud;
         // 2. Get all recipes By Category from Firebase newer than 'lud' timestamp
         // 3. If data != null
         // 3.1 push all recipes to SQL
@@ -190,7 +173,7 @@ public class RecipeViewModel extends AndroidViewModel {
         // 5. return getAllRecipes()
 
         // Do an asynchronous operation to fetch users.
-        firestoreManager.getAllRecipesFirebase(new OnCompleteListener<QuerySnapshot>() {
+/*        firestoreManager.getAllRecipesFirebase(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful())
@@ -212,6 +195,33 @@ public class RecipeViewModel extends AndroidViewModel {
                 {
                     Log.d("Niv", "Error getting documents: ", task.getException());
                 }
+            }
+        });*/
+
+        Date d = RecipeRepository.lud;
+
+
+        firestoreManager.getAllRecipesFirebase(new EventListener<QuerySnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("Niv", "Listen failed.", e);
+                    return;
+                }
+                List<Recipe> list = new ArrayList<>();
+                for (QueryDocumentSnapshot document : value)
+                {
+                    Recipe r = new Recipe(document.getData());
+                    //mRepository.recipeExists(r.getId());
+                    if(r.getTimestamp().after(d))
+                    {
+                        // Insert to SQL (Room)
+                        mRepository.insert(r);
+                    }
+                    list.add(r);
+                }
+                recipes.setValue(list);
             }
         });
     }

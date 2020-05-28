@@ -66,6 +66,7 @@ public class RecipeListFragment extends Fragment implements RecyclerViewClickInt
             if(!recipes.isEmpty()){
                 tv_no_data.setVisibility(View.INVISIBLE);
                 recipesList = recipes;
+                //adapter.notifyDataSetChanged();
             }
             else{
                 tv_no_data.setVisibility(View.VISIBLE);

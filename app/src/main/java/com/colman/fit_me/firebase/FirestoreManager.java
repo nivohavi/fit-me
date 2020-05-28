@@ -4,7 +4,10 @@ import com.colman.fit_me.model.Recipe;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Date;
@@ -15,6 +18,8 @@ public class FirestoreManager {
 
     private static FirestoreManager recipesFirestoreManager;
     private CollectionReference recipesCollectionReference;
+    private CollectionReference lastupdateCollectionReference;
+
 
 
     public static FirestoreManager newInstance() {
@@ -26,6 +31,7 @@ public class FirestoreManager {
 
     private FirestoreManager() {
         recipesCollectionReference = FirebaseFirestore.getInstance().collection("recipes");
+        lastupdateCollectionReference = FirebaseFirestore.getInstance().collection("lastupdate");
     }
 
     public void createDocument(Recipe recipe) {
@@ -44,8 +50,17 @@ public class FirestoreManager {
 
     public void getAllRecipesFirebase(OnCompleteListener<QuerySnapshot> onCompleteListener)
     {
-
         recipesCollectionReference.get().addOnCompleteListener(onCompleteListener);
+    }
+
+    public void getAllRecipesFirebase(EventListener<QuerySnapshot> eventListener)
+    {
+        recipesCollectionReference.orderBy("name", Query.Direction.DESCENDING).addSnapshotListener(eventListener);
+    }
+
+    public void getLastUpdateFirebase(OnCompleteListener<DocumentSnapshot> onCompleteListener)
+    {
+        lastupdateCollectionReference.document("lud").get().addOnCompleteListener(onCompleteListener);
     }
 
     public void updateRecipeFirebase(Recipe recipe) {

@@ -69,12 +69,16 @@ public class CategoriesFragment extends Fragment implements RecyclerViewClickInt
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         MainActivity.mainProgressBar.setVisibility(View.VISIBLE);
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Categories");
-        categoriesList.add(new Category("Italian"));
-        categoriesList.add(new Category("Israeli"));
-        categoriesList.add(new Category("Asian"));
-        categoriesList.add(new Category("Mexican"));
-        categoriesList.add(new Category("French"));
-        categoriesList.add(new Category("Category 6"));
+        categoriesList = new ArrayList<Category>() {
+            {
+                add(new Category("Italian"));
+                add(new Category("Israeli"));
+                add(new Category("Asian"));
+                add(new Category("Mexican"));
+                add(new Category("French"));
+                add(new Category("Category 6"));
+            }
+        };
 
         root = inflater.inflate(R.layout.fragment_categories, container, false);
         recyclerView = root.findViewById(R.id.recycler_view);
@@ -92,8 +96,7 @@ public class CategoriesFragment extends Fragment implements RecyclerViewClickInt
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
-
-        }
+    }
 
 
     @Override
