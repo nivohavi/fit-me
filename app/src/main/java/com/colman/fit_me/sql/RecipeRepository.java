@@ -10,14 +10,18 @@ import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 
 import com.colman.fit_me.firebase.FirestoreManager;
+import com.colman.fit_me.firebase.RecipeListLiveData;
 import com.colman.fit_me.model.Recipe;
 import com.colman.fit_me.utils.Converters;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -30,7 +34,7 @@ public class RecipeRepository {
     private RecipeDao mRecipeDao;
     private LiveData<List<Recipe>> mAllRecipes;
     public static Date lud;
-    private FirestoreManager firestoreManager;
+    private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
 
     // Note that in order to unit test the RecipeRepository, you have to remove the Application
@@ -39,7 +43,6 @@ public class RecipeRepository {
     // https://github.com/googlesamples
     public RecipeRepository(Application application) {
         lud = new Date();
-        firestoreManager = FirestoreManager.newInstance();
 /*        firestoreManager.getLastUpdateFirebase(new OnCompleteListener<DocumentSnapshot>() {
             int count =0;
             @Override
@@ -66,25 +69,14 @@ public class RecipeRepository {
         return mAllRecipes;
     }
 
-    public LiveData<List<Recipe>> getAllRecipesByCategory()
-    {
-        return mAllRecipes;
+    public RecipeListLiveData getFirestoreLiveData() {
+        Query queryReference = firebaseFirestore
+                .collection("recipes").orderBy("name");
+        return new RecipeListLiveData();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public boolean recipeExists(String id)
-    {
-        AtomicBoolean returnValue = new AtomicBoolean(false);
-        mAllRecipes.getValue().forEach(recipe -> {
-            // TODO: fix bugs
-            if(recipe.getId() == id)
-            {
-                returnValue.set(true);
-            }
-        });
 
-        return returnValue.get();
-    }
+
     // You must call this on a non-UI thread or your app will throw an exception. Room ensures
     // that you're not doing any long running operations on the main thread, blocking the UI.
     public void insert(final Recipe recipe) {

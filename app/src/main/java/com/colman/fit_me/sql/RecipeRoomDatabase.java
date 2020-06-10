@@ -39,7 +39,7 @@ public abstract class RecipeRoomDatabase extends RoomDatabase {
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
 
-    static RecipeRoomDatabase getDatabase(final Context context) {
+    public static RecipeRoomDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (RecipeRoomDatabase.class) {
                 if (INSTANCE == null) {

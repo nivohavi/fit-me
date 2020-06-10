@@ -48,4 +48,6 @@ public interface RecipeDao {
 
     @Query("SELECT * FROM recipe_table")
     LiveData<List<Recipe>> getAllRecipes();
+
+
 }

@@ -1,7 +1,12 @@
 package com.colman.fit_me.firebase;
 
+import android.util.Log;
+
 import com.colman.fit_me.model.Recipe;
+import com.colman.fit_me.sql.RecipeRepository;
+import com.colman.fit_me.viewmodel.RecipeViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -19,7 +24,7 @@ public class FirestoreManager {
     private static FirestoreManager recipesFirestoreManager;
     private CollectionReference recipesCollectionReference;
     private CollectionReference lastupdateCollectionReference;
-
+    private RecipeRepository mRepository;
 
 
     public static FirestoreManager newInstance() {
@@ -34,23 +39,12 @@ public class FirestoreManager {
         lastupdateCollectionReference = FirebaseFirestore.getInstance().collection("lastupdate");
     }
 
-    public void createDocument(Recipe recipe) {
-        Map<String, Object> recipeMap = new HashMap<>();
-        recipeMap.put("id", recipe.id );
-        recipeMap.put("name", recipe.name);
-        recipeMap.put("createdBy", "createdBy");
-        recipeMap.put("category", "category");
-        recipeMap.put("description", "description");
-        recipeMap.put("ingredientsJson", "ingredientsJson");
-        recipeMap.put("directions", "directions");
-        recipeMap.put("imgURL", "imgURL");
-        recipeMap.put("timestamp", new Date());
-        recipesCollectionReference.add(recipeMap);
-    }
 
     public void getAllRecipesFirebase(OnCompleteListener<QuerySnapshot> onCompleteListener)
     {
         recipesCollectionReference.get().addOnCompleteListener(onCompleteListener);
+
+
     }
 
     public void getAllRecipesFirebase(EventListener<QuerySnapshot> eventListener)
@@ -61,6 +55,18 @@ public class FirestoreManager {
     public void getLastUpdateFirebase(OnCompleteListener<DocumentSnapshot> onCompleteListener)
     {
         lastupdateCollectionReference.document("lud").get().addOnCompleteListener(onCompleteListener);
+    }
+
+    public void delete(String id, RecipeViewModel.MyCallback callback)
+    {
+
+        recipesCollectionReference.document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                mRepository.deleteAllRecipes();
+                callback.onDataGot("Deleted");
+            }
+        });
     }
 
 /*    public void updateRecipeFirebase(Recipe recipe) {

@@ -19,6 +19,7 @@ import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.firebase.FirebaseQueryLiveData;
 import com.colman.fit_me.firebase.FirestoreManager;
 import com.colman.fit_me.model.Recipe;
+import com.colman.fit_me.model.RecipeModel;
 import com.colman.fit_me.sql.RecipeRepository;
 import com.colman.fit_me.sql.RecipeRoomDatabase;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -55,6 +56,8 @@ public class RecipeViewModel extends AndroidViewModel {
     private final String REFERENCE_URL = "gs://matkon-5d8d7.appspot.com";
     private StorageReference storageRef;
     private UploadTask uploadTask;
+    LiveData<List<Recipe>> liveData;
+
 
 
     private FirebaseFirestore fb;
@@ -64,9 +67,6 @@ public class RecipeViewModel extends AndroidViewModel {
     private MutableLiveData<List<Recipe>> recipes;
     private FirestoreManager firestoreManager;
 
-
-    private static final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("recipes");
-    private final FirebaseQueryLiveData liveData = new FirebaseQueryLiveData(mDatabase);
 
     public RecipeViewModel (Application application)
     {
@@ -78,6 +78,28 @@ public class RecipeViewModel extends AndroidViewModel {
         fbStorage = FirebaseStorage.getInstance();
         storageRef = fbStorage.getReferenceFromUrl(REFERENCE_URL);
     }
+
+
+    ///////////////////// Eliav ////////////////////////
+
+    public LiveData<List<Recipe>> getData() {
+        if (liveData == null) {
+            liveData = RecipeModel.instance.getAllRecipes();
+        }
+        return liveData;
+    }
+
+    public void refresh(RecipeModel.CompListener listener) {
+        RecipeModel.instance.refreshRecipesList(listener);
+    }
+
+
+    ///////////////////////////////////////////////////
+
+
+
+
+
 
     public RecipeViewModel (){
         super(null);
