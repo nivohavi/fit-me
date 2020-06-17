@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,8 +36,10 @@ import com.colman.fit_me.firebase.ModelFirebase;
 import com.colman.fit_me.model.Recipe;
 
 import com.colman.fit_me.model.RecipeModel;
+import com.colman.fit_me.viewmodel.RecipeListViewModel;
 import com.colman.fit_me.viewmodel.RecipeViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -42,82 +47,83 @@ import java.util.List;
 
 public class RecipeListFragment extends Fragment implements RecyclerViewClickInterface {
 
-    NavController nav;
+    public static NavController nav;
     FloatingActionButton fab;
     private RecyclerView recyclerView;
     private TextView tv_no_data;
     private RecipeListAdapter adapter;
     private RecipeViewModel mRecipeViewModel;
+    private RecipeListViewModel viewModel;
+
     private ModelFirebase modelFirebase;
     View root;
-    List<Recipe> recipesList =new ArrayList<>();
+    public static List<Recipe> recipesList =new ArrayList<>();
     private String pressed_category;
+    private ProgressBar progressBar;
     Delegate parent;
     LiveData<List<Recipe>> liveData;
-    List<Recipe> data = new LinkedList<Recipe>();
-
-
-
+    RecyclerView list;
+    public static List<Recipe> data = new LinkedList<Recipe>();
+    NewRecipesListAdapter new_adapter;
 
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof Delegate) {
-            parent = (Delegate) getActivity();
-        } else {
-            throw new RuntimeException(context.toString()
-                    + "student list parent activity must implement dtudent ;list fragment Delegate");
-        }
-        setHasOptionsMenu(true);
-
-        mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
+        viewModel = new ViewModelProvider(this).get(RecipeListViewModel.class);
     }
-
-
-
-
-
-
-
-
-
-
-
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_recipe_list, container, false);
-        recyclerView = root.findViewById(R.id.recycler_view);
+        list = root.findViewById(R.id.recycler_view);
+        list.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        list.setLayoutManager(layoutManager);
+        new_adapter = new NewRecipesListAdapter();
+        list.setAdapter(new_adapter);
+
+        progressBar = root.findViewById(R.id.progressBar);
         tv_no_data = root.findViewById(R.id.tv_no_data);
 
-        adapter = new RecipeListAdapter(recipesList, this);
+
+        /////////
+
+/*        recyclerView = root.findViewById(R.id.recycler_view);
+        tv_no_data = root.findViewById(R.id.tv_no_data);
+        mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
+        progressBar = root.findViewById(R.id.progressBar);
+
+        adapter = new RecipeListAdapter();
 
          pressed_category = RecipeListFragmentArgs.fromBundle(getArguments()).getCategory();
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.context);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);*/
 
         ///////////////////// Eliav //////////////////////////
+        pressed_category = RecipeListFragmentArgs.fromBundle(getArguments()).getCategory();
 
-        liveData = mRecipeViewModel.getData();
+        liveData = viewModel.getData();
         liveData.observe(getViewLifecycleOwner(), new Observer<List<Recipe>>() {
             @Override
             public void onChanged(List<Recipe> recipes) {
                 if(!recipes.isEmpty())
                 {
                     tv_no_data.setVisibility(View.INVISIBLE);
-                    recipesList = recipes;
-                    adapter.notifyDataSetChanged();
+                    data = recipes;
+                    new_adapter.notifyDataSetChanged();
                 }
                 else
                 {
                     tv_no_data.setVisibility(View.VISIBLE);
                 }
-
+                MainActivity.mainProgressBar.setVisibility(View.INVISIBLE);
+                //adapter.setRecipes(recipes);
             }
+
         });
 
 /*        final SwipeRefreshLayout swipeRefresh = root.findViewById(R.id.students_list_swipe_refresh);
@@ -135,33 +141,7 @@ public class RecipeListFragment extends Fragment implements RecyclerViewClickInt
 
         /////////////////////////////////////////////////////
 
-
-
-
-
-        // For ModelFirebase
-/*
-        modelFirebase.getAllRecipes(new ModelFirebase.GetAllRecipesListener(){
-            @Override
-            public void onComplete(LiveData<List<Recipe>> data) {
-                recipesList = data.getValue();
-                if(!recipesList.isEmpty())
-                {
-                    recipesList.removeIf(recipe -> (!recipe.getCategory().equals(pressed_category)));
-                    tv_no_data.setVisibility(View.INVISIBLE);
-                    //recipesList = recipes;
-                    //adapter.notifyDataSetChanged();
-                }
-                else
-                {
-                    tv_no_data.setVisibility(View.VISIBLE);
-                }
-                adapter.setRecipes(recipesList);
-                MainActivity.mainProgressBar.setVisibility(View.INVISIBLE);
-            }
-        });*/
-
-        mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
+/*        mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
         mRecipeViewModel.getRecipes().observe(this.getViewLifecycleOwner(), recipes -> {
             recipes.removeIf(recipe -> (!recipe.getCategory().equals(pressed_category)));
             if(!recipes.isEmpty())
@@ -177,7 +157,7 @@ public class RecipeListFragment extends Fragment implements RecyclerViewClickInt
             adapter.setRecipes(recipes);
             MainActivity.mainProgressBar.setVisibility(View.INVISIBLE);
 
-        });
+        });*/
 
         ((MainActivity) getActivity()).getSupportActionBar().setTitle(pressed_category);
 
@@ -208,9 +188,9 @@ public class RecipeListFragment extends Fragment implements RecyclerViewClickInt
     @Override
     public void onItemClick(int position) {
 
-        Recipe r =null;
-        RecipeListFragmentDirections.ActionNavigationRecipeListToNavigationRecipeDetails action = RecipeListFragmentDirections.actionNavigationRecipeListToNavigationRecipeDetails(recipesList.get(position));
-        action.setRecipeObj(recipesList.get(position));
+        Recipe r = data.get(position);
+        RecipeListFragmentDirections.ActionNavigationRecipeListToNavigationRecipeDetails action = RecipeListFragmentDirections.actionNavigationRecipeListToNavigationRecipeDetails(r);
+        action.setRecipeObj(r);
         nav.navigate(action);
 
     }
@@ -235,5 +215,93 @@ public class RecipeListFragment extends Fragment implements RecyclerViewClickInt
         void onItemSelected(Recipe recipe);
     }
 
+    interface OnItemClickListener{
+        void onClick(int position);
+    }
+
+    static class RecipeRowViewHolder extends RecyclerView.ViewHolder
+    {
+        TextView txtRecipeName;
+        TextView txtRecipeDescription;
+        ImageView img;
+        Recipe recipe;
+
+        public RecipeRowViewHolder(@NonNull View itemView, final OnItemClickListener listener)
+        {
+            super(itemView);
+            img = itemView.findViewById(R.id.imageView);
+            txtRecipeName = itemView.findViewById(R.id.txt_recipe_name);
+            txtRecipeDescription = itemView.findViewById(R.id.txt_recipe_description);
+
+
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    Recipe r = data.get(position);
+                    RecipeListFragmentDirections.ActionNavigationRecipeListToNavigationRecipeDetails action = RecipeListFragmentDirections.actionNavigationRecipeListToNavigationRecipeDetails(r);
+                    action.setRecipeObj(r);
+                    nav.navigate(action);
+                }
+            });
+
+        }
+
+        public void bind(Recipe r) {
+            txtRecipeName.setText(r.name);
+            txtRecipeDescription.setText(r.description);
+            Picasso.get().load(R.drawable.ic_launcher_foreground).into(img);
+            if(!r.getImgURL().equals(""))
+            {
+                Picasso.get().load(r.getImgURL()).into(img, new com.squareup.picasso.Callback(){
+
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                    }
+                });
+            }
+            else
+            {
+                Picasso.get().load(R.drawable.ic_launcher_foreground).into(img);
+            }
+            recipe = r;
+        }
+    }
+
+    class NewRecipesListAdapter extends RecyclerView.Adapter<RecipeRowViewHolder>
+    {
+        private OnItemClickListener listener;
+
+        void setOnIntemClickListener(OnItemClickListener listener){
+            this.listener = listener;
+        }
+
+
+        @NonNull
+        @Override
+        public RecipeRowViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+            View v = LayoutInflater.from(getActivity()).inflate(R.layout.row_recipe, viewGroup,false );
+            RecipeRowViewHolder vh = new RecipeRowViewHolder(v, listener);
+            return vh;
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull RecipeRowViewHolder studentRowViewHolder, int i) {
+            Recipe st = data.get(i);
+            studentRowViewHolder.bind(st);
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return data.size();
+        }
+    }
 
 }

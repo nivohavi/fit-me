@@ -2,6 +2,7 @@ package com.colman.fit_me;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity{
     AppBarConfiguration appBarConfiguration;
     private RecipeViewModel mWordViewModel;
     public static ProgressBar mainProgressBar;
+    public static Context context;
+
 
     @SuppressLint("WrongConstant")
     @Override
@@ -38,7 +41,7 @@ public class MainActivity extends AppCompatActivity{
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mainProgressBar = findViewById(R.id.progressBar);
-
+        context = getApplicationContext();
 
 
         appBarConfiguration = new AppBarConfiguration.Builder(

@@ -25,11 +25,11 @@ public interface RecipeDao {
             "last_name LIKE :last LIMIT 1")
     User findByName(String first, String last);*/
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Recipe recipe);
 
-    @Insert
-    void insertAll(Recipe... users);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAll(Recipe... recipes);
 
     @Update
     void update(Recipe recipe);
@@ -48,6 +48,9 @@ public interface RecipeDao {
 
     @Query("SELECT * FROM recipe_table")
     LiveData<List<Recipe>> getAllRecipes();
+
+    @Query("SELECT * FROM recipe_table WHERE createdBy = (:email)")
+    LiveData<List<Recipe>> getAllRecipesByUser(String email);
 
 
 }

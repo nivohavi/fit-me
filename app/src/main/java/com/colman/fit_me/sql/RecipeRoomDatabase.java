@@ -65,15 +65,13 @@ public abstract class RecipeRoomDatabase extends RoomDatabase {
                 RecipeDao dao = INSTANCE.recipeDao();
 
 
-                dao.deleteAll();
+                //dao.deleteAll();
 
 
-/*                recipe = new Recipe("Pasta");
-                dao.insert(recipe);
-                recipe = new Recipe("Salad");
-                dao.insert(recipe);*/
             });
         }
     };
+
+
 
 }

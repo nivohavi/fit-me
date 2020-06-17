@@ -34,7 +34,7 @@ public class RecipeListLiveData extends LiveData<List<Recipe>> implements EventL
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+   /* @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {
         recipeListTemp.clear();
@@ -66,12 +66,13 @@ public class RecipeListLiveData extends LiveData<List<Recipe>> implements EventL
             }
         }
         recipesList.setValue(recipeListTemp);
-
-
-
-
-
     }
+*/
+
+
+
+
+
 
     @Override
     public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {

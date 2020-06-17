@@ -1,5 +1,6 @@
 package com.colman.fit_me.ui.recipes;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,7 +8,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
@@ -21,9 +21,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.colman.fit_me.LoginActivity;
 import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.R;
 import com.colman.fit_me.model.Recipe;
+import com.colman.fit_me.viewmodel.EditRecipeViewModel;
+import com.colman.fit_me.viewmodel.NewRecipeViewModel;
 import com.colman.fit_me.viewmodel.RecipeViewModel;
 import com.google.firebase.Timestamp;
 import com.squareup.picasso.Picasso;
@@ -46,14 +49,16 @@ public class EditRecipeFragment extends Fragment {
     private EditText et_recipe_name,et_recipe_description,et_recipe_ing,et_recipe_directions;
     private ImageView img_recipe;
     private ProgressBar progressBar;
+    private EditRecipeViewModel viewModel;
+
     private Uri filePath;
     int count = 0;
     boolean isPickedImage = false;
 
-
-
-    public EditRecipeFragment() {
-        // Required empty public constructor
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        viewModel = new ViewModelProvider(this).get(EditRecipeViewModel.class);
     }
 
 
@@ -61,9 +66,9 @@ public class EditRecipeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_edit_recipe, container, false);
-        mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
+        //mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
         r = RecipeDetailsFragmentArgs.fromBundle(getArguments()).getRecipeObj();
-        data = new HashMap<>();
+        //data = new HashMap<>();
         ((MainActivity) getActivity()).getSupportActionBar().setTitle(r.getName());
 
 
@@ -126,6 +131,7 @@ public class EditRecipeFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         menuInflater.inflate(R.menu.menu_edit_recipe, menu);
@@ -137,11 +143,8 @@ public class EditRecipeFragment extends Fragment {
         switch (item.getItemId())
         {
             case R.id.delete_button:
-                mRecipeViewModel.delete(r.getId(), new RecipeViewModel.MyCallback() {
-                    @Override
-                    public void onDataGot(String string) {
-                        nav.navigate(R.id.action_navigation_edit_recipe_to_navigation_my_recipes);
-                    }
+                viewModel.deleteRecipe(r, result -> {
+                    nav.navigate(R.id.action_navigation_edit_recipe_to_navigation_my_recipes);
                 });
                 return true;
             case R.id.save_button:
@@ -149,17 +152,33 @@ public class EditRecipeFragment extends Fragment {
                 {
                     count++;
                     progressBar.setVisibility(item.getActionView().VISIBLE);
-                    data.put("id",r.getId());
+                    Recipe recipe = new Recipe(r.getId(),et_recipe_name.getText().toString(),r.getImgURL(), LoginActivity.mFirebaseUser.getEmail(), r.getCategory(),et_recipe_description.getText().toString(),et_recipe_directions.getText().toString(),et_recipe_ing.getText().toString(),new Date());
+/*                    data.put("id",r.getId());
                     data.put("name",et_recipe_name.getText().toString());
                     data.put("category",r.getCategory());
                     data.put("description",et_recipe_description.getText().toString());
                     data.put("directions",et_recipe_directions.getText().toString());
                     data.put("ingredientsJson",et_recipe_ing.getText().toString());
                     data.put("imgURL",r.getImgURL());
-                    data.put("timestamp",new Timestamp(new Date()));
+                    data.put("timestamp",new Timestamp(new Date()));*/
                     if(isPickedImage)
                     {
-                        mRecipeViewModel.uploadImage(r.getId(), filePath, new RecipeViewModel.MyCallback() {
+                        viewModel.uploadImage(filePath,result -> {
+                            //data.put("imgURL",result.toString());
+                            recipe.setImgURL(result.toString());
+                            viewModel.updateRecipe(recipe,result2 -> {
+                                if(result2)
+                                {
+                                    nav.navigate(R.id.action_navigation_edit_recipe_to_navigation_my_recipes);
+                                    progressBar.setVisibility(item.getActionView().INVISIBLE);
+                                    count=0;
+                                }
+                            });
+                        });
+
+
+
+/*                        mRecipeViewModel.uploadImage(r.getId(), filePath, new RecipeViewModel.MyCallback() {
                             @Override
                             public void onDataGot(String string) {
                                 data.put("imgURL",string);
@@ -173,23 +192,32 @@ public class EditRecipeFragment extends Fragment {
                                     }
                                 });
                             }
-                        });
+                        });*/
                     }
                     else
                     {
-                        mRecipeViewModel.update(data, new RecipeViewModel.MyCallback() {
+                        viewModel.updateRecipe(recipe,result ->{
+                            if(result)
+                            {
+                                nav.navigate(R.id.action_navigation_edit_recipe_to_navigation_my_recipes);
+                                progressBar.setVisibility(item.getActionView().INVISIBLE);
+                                count=0;
+                            }
+                        });
+
+/*                        mRecipeViewModel.update(data, new RecipeViewModel.MyCallback() {
                             @Override
                             public void onDataGot(String string) {
                                 nav.navigate(R.id.action_navigation_edit_recipe_to_navigation_my_recipes);
                                 progressBar.setVisibility(item.getActionView().INVISIBLE);
                                 count=0;
                             }
-                        });
+                        });*/
                     }
                     isPickedImage = false;
                 }
                 else{
-                    Toast.makeText(getActivity(),"Uploading...",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),"In Progress...",Toast.LENGTH_SHORT).show();
                     break;
                 }
                 isPickedImage = false;

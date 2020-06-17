@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import com.colman.fit_me.R;
 import com.colman.fit_me.RecyclerViewClickInterface;
 import com.colman.fit_me.model.Category;
 import com.colman.fit_me.model.Recipe;
+import com.colman.fit_me.ui.recipes.RecipeListFragment;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -25,6 +27,8 @@ import java.util.List;
 public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.RecipeViewHolder> {
 
     private RecyclerViewClickInterface recyclerViewClickInterface;
+    private AdapterView.OnItemClickListener listener;
+
     private List<Recipe> mRecipes; // Cached copy of recipes
 
     public RecipeListAdapter(List<Recipe> mRecipes, RecyclerViewClickInterface recyclerViewClickInterface)
@@ -40,6 +44,9 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         //mInflater = LayoutInflater.from(context);
     }
 
+    public RecipeListAdapter() {
+    }
+
     @Override
     public RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
@@ -51,7 +58,9 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
 
     @Override
     public void onBindViewHolder(RecipeViewHolder holder, int position) {
-        if (mRecipes != null)
+        Recipe r = RecipeListFragment.recipesList.get(position);
+        holder.bind(r);
+/*        if (mRecipes != null)
         {
             Recipe current = mRecipes.get(position);
             holder.txtRecipeName.setText(current.getName());
@@ -80,7 +89,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         {
             // Covers the case of data not being ready yet.
             holder.txtRecipeName.setText("No Recipe");
-        }
+        }*/
     }
 
     public void setRecipes(List<Recipe> recipes){
@@ -97,6 +106,9 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         else return 0;
     }
 
+    void setOnIntemClickListener(AdapterView.OnItemClickListener listener){
+        this.listener = listener;
+    }
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
@@ -108,6 +120,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         TextView txtRecipeName;
         TextView txtRecipeDescription;
         ImageView img;
+        Recipe recipe;
         CardView myCardView;
 
         // We also create a constructor that accepts the entire item row
@@ -118,9 +131,9 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
 
-            img = (ImageView) itemView.findViewById(R.id.imageView);
-            txtRecipeName = (TextView) itemView.findViewById(R.id.txt_recipe_name);
-            txtRecipeDescription = (TextView) itemView.findViewById(R.id.txt_recipe_description);
+            img = itemView.findViewById(R.id.imageView);
+            txtRecipeName = itemView.findViewById(R.id.txt_recipe_name);
+            txtRecipeDescription = itemView.findViewById(R.id.txt_recipe_description);
 
 
 
@@ -135,6 +148,11 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
             });
 
         }
-
+        public void bind(Recipe r) {
+            txtRecipeName.setText(r.name);
+            txtRecipeDescription.setText(r.description);
+            Picasso.get().load(R.drawable.ic_launcher_foreground).into(img);
+            recipe = r;
+        }
     }
 }

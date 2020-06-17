@@ -1,10 +1,15 @@
 package com.colman.fit_me.model;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 
 import androidx.lifecycle.LiveData;
 
+import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.MyApplication;
 import com.colman.fit_me.sql.RecipeRoomDatabase;
 
@@ -15,6 +20,10 @@ import java.util.List;
 
 public class RecipeModel {
     public static final RecipeModel instance = new RecipeModel();
+    SharedPreferences sharedPreferences;
+    Context ctx;
+    Long last;
+
 
     public interface Listener<T>{
         void onComplete(T data);
@@ -22,55 +31,89 @@ public class RecipeModel {
     public interface CompListener{
         void onComplete();
     }
-    private RecipeModel(){ }
+    private RecipeModel(){
+        ctx = MainActivity.context;
+        sharedPreferences = ctx.getSharedPreferences("TAG", MODE_PRIVATE);
+    }
+
+    public void newRecipeId(Listener<String> listener) {
+        RecipeFirebase.newRecipeId(listener);
+    }
+
+    public void uploadImage(Uri uri, Listener<Uri> listener) {
+        RecipeFirebase.uploadImage(uri,listener);
+    }
+
+    public void deleteRecipe(Recipe recipe,Listener<Boolean> listener) {
+        RecipeFirebase.deleteRecipe(recipe,listener);
+    }
 
     public void addRecipe(Recipe recipe,Listener<Boolean> listener) {
         RecipeFirebase.addRecipe(recipe,listener);
     }
 
+    public void updateRecipe(Recipe recipe,Listener<Boolean> listener) {
+        RecipeFirebase.updateRecipe(recipe,listener);
+    }
+
     public LiveData<List<Recipe>> getAllRecipes(){
-        LiveData<List<Recipe>> liveData = RecipeRoomDatabase.getDatabase(MyApplication.context).recipeDao().getAllRecipes();
+        LiveData<List<Recipe>> liveData = RecipeRoomDatabase.getDatabase(MainActivity.context).recipeDao().getAllRecipes();
+        refreshRecipesList(null);
+        return liveData;
+    }
+
+    public LiveData<List<Recipe>> getAllRecipesByUser(String email){
+        LiveData<List<Recipe>> liveData = RecipeRoomDatabase.getDatabase(MainActivity.context).recipeDao().getAllRecipesByUser(email);
         refreshRecipesList(null);
         return liveData;
     }
 
 
-    public Recipe getRecipe(String id){
-        return null;
-    }
-
-    public void update(Recipe recipe){
-
-    }
-
     public void delete(Recipe recipe){
+        RecipeFirebase.deleteRecipe(recipe, new Listener<Boolean>() {
+            @Override
+            public void onComplete(Boolean data) {
+                new AsyncTask<String,String,String>(){
+
+                    @Override
+                    protected String doInBackground(String... strings) {
+                        RecipeRoomDatabase.getDatabase(MainActivity.context).recipeDao().delete(recipe);
+                        return "";
+                    }
+                }.execute("");
+            }
+        });
+        //RecipeRoomDatabase.getDatabase(MainActivity.context).recipeDao().delete(recipe);
 
     }
 
     public void refreshRecipesList(final CompListener listener){
-        String last = MyApplication.context.getSharedPreferences("TAG",MODE_PRIVATE).getString("RecipesLastUpdateDate","");
-        Date d = new Date(Date.parse(last));
-        RecipeFirebase.getAllRecipesSince(d,new Listener<List<Recipe>>() {
+
+        last = sharedPreferences.getLong("RecipesLastUpdateDate",0);
+        Date begining = new Date(0);
+        RecipeFirebase.getAllRecipesSince(last,new Listener<List<Recipe>>() {
             @SuppressLint("StaticFieldLeak")
             @Override
             public void onComplete(final List<Recipe> data) {
                 new AsyncTask<String,String,String>(){
                     @Override
                     protected String doInBackground(String... strings) {
-                        long lastUpdated = 0;
-                        Date d = new Date();
+                        Date d = new Date(0);
                         for(Recipe recipe : data)
                         {
-                            RecipeRoomDatabase.getDatabase(MyApplication.context).recipeDao().insertAll(recipe);
+                            RecipeRoomDatabase.getDatabase(ctx).recipeDao().insert(recipe);
+                            //RecipeRoomDatabase.getDatabase(ctx).recipeDao().insertAll(recipe);
                             //AppLocalDb.db.studentDao().insertAll(recipe);
-                            if (recipe.timestamp.after(d))
+                            //if (recipe.timestamp.getTime() > d.getTime())
+                            //if ((recipe.timestamp.getTime() - d.getTime()) > Integer.parseInt(last))
+                            if(recipe.timestamp.after(d))
                             {
-                                d = recipe.timestamp;
+                                last = recipe.timestamp.getTime();
                             }
                         }
-                        SharedPreferences.Editor edit = MyApplication.context.getSharedPreferences("TAG", MODE_PRIVATE).edit();
+                        SharedPreferences.Editor edit = sharedPreferences.edit();
                         //edit.putLong("RecipesLastUpdateDate",lastUpdated);
-                        edit.putString("RecipesLastUpdateDate",d.toString());
+                        // edit.putLong("RecipesLastUpdateDate",d.getTime());
                         edit.commit();
                         return "";
                     }

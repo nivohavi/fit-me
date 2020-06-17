@@ -1,6 +1,7 @@
 package com.colman.fit_me.ui.recipes;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -30,6 +31,8 @@ import android.widget.Toast;
 import com.colman.fit_me.LoginActivity;
 import com.colman.fit_me.R;
 import com.colman.fit_me.model.Recipe;
+import com.colman.fit_me.viewmodel.NewRecipeViewModel;
+import com.colman.fit_me.viewmodel.RecipeListViewModel;
 import com.colman.fit_me.viewmodel.RecipeViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -51,9 +54,16 @@ public class NewRecipeFragment extends Fragment {
     private final int PICK_IMAGE_REQUEST = 71;
     private String pressed_category;
     private RecipeViewModel mRecipeViewModel;
-    int count = 0;
+    private NewRecipeViewModel viewModel;
+    private String newID;
 
+    public static int count = 0;
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        viewModel = new ViewModelProvider(this).get(NewRecipeViewModel.class);
+    }
 
     public NewRecipeFragment() {
         // Required empty public constructor
@@ -65,7 +75,7 @@ public class NewRecipeFragment extends Fragment {
     {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_new_recipe, container, false);
-        mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
+        //mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
         return root;
     }
 
@@ -103,6 +113,14 @@ public class NewRecipeFragment extends Fragment {
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        if(count != 0)
+        {
+            menu.setGroupVisible(0,false);
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId())
@@ -112,8 +130,6 @@ public class NewRecipeFragment extends Fragment {
                 {
                     count++;
                     progressBar.setVisibility(item.getActionView().VISIBLE);
-                    String newID = mRecipeViewModel.getFirebaseId();
-                    Recipe r = new Recipe(newID,et_recipe_name.getText().toString(),"placeholder", LoginActivity.mFirebaseUser.getEmail(),pressed_category,et_recipe_description.getText().toString(),et_recipe_directions.getText().toString(),et_recipe_ing.getText().toString(),new Date());
                     if (!checkForm())
                     {
                         Toast.makeText(getActivity(),"Not all fields were filled",Toast.LENGTH_SHORT).show();
@@ -121,13 +137,27 @@ public class NewRecipeFragment extends Fragment {
                         count=0;
                         break;
                     }
+                    viewModel.newRecipeId(data -> {
+                        newID = data;
+                    });
+                    Recipe r = new Recipe(newID,et_recipe_name.getText().toString(),"placeholder", LoginActivity.mFirebaseUser.getEmail(),pressed_category,et_recipe_description.getText().toString(),et_recipe_directions.getText().toString(),et_recipe_ing.getText().toString(),new Date());
+
                     // Here will be image upload
                     //Uri path = Uri.parse("android.resource://com.colman.fit_me/" + R.drawable.recipe_placeholder);
                     if(filePath == null)
                     {
                         //filePath = path;
                         r.setImgURL("https://i1.wp.com/ilikeweb.co.za/wp-content/uploads/2019/07/placeholder.png");
-                        mRecipeViewModel.insert(r, new RecipeViewModel.MyCallback() {
+                        viewModel.addRecipe(r,data -> {
+                            if(data)
+                            {
+                                NewRecipeFragmentDirections.ActionNavigationNewRecipeToNavigationRecipeList action = NewRecipeFragmentDirections.actionNavigationNewRecipeToNavigationRecipeList(r.getCategory());
+                                nav.navigate(action, new NavOptions.Builder().setPopUpTo(R.id.navigation_recipe_list,true).build());
+                                progressBar.setVisibility(item.getActionView().INVISIBLE);
+                                count=0;
+                            }
+                        });
+/*                        mRecipeViewModel.insert(r, new RecipeViewModel.MyCallback() {
                             @Override
                             public void onDataGot(String string) {
                                 NewRecipeFragmentDirections.ActionNavigationNewRecipeToNavigationRecipeList action = NewRecipeFragmentDirections.actionNavigationNewRecipeToNavigationRecipeList(r.getCategory());
@@ -135,11 +165,23 @@ public class NewRecipeFragment extends Fragment {
                                 progressBar.setVisibility(item.getActionView().INVISIBLE);
                                 count=0;
                             }
-                        });
+                        });*/
                     }
                     else
                     {
-                        mRecipeViewModel.uploadImage(r.getId(), filePath, new RecipeViewModel.MyCallback() {
+                        viewModel.uploadImage(filePath,data -> {
+                            r.setImgURL(data.toString());
+                            viewModel.addRecipe(r,data2 -> {
+                                if(data2)
+                                {
+                                    NewRecipeFragmentDirections.ActionNavigationNewRecipeToNavigationRecipeList action = NewRecipeFragmentDirections.actionNavigationNewRecipeToNavigationRecipeList(r.getCategory());
+                                    nav.navigate(action, new NavOptions.Builder().setPopUpTo(R.id.navigation_recipe_list,true).build());
+                                    progressBar.setVisibility(item.getActionView().INVISIBLE);
+                                    count=0;
+                                }
+                            });
+                        });
+/*                        mRecipeViewModel.uploadImage(r.getId(), filePath, new RecipeViewModel.MyCallback() {
                             @Override
                             public void onDataGot(String string) {
                                 // New Recipe Insertion - only to Firebase
@@ -155,11 +197,11 @@ public class NewRecipeFragment extends Fragment {
                                 });
 
                             }
-                        });
+                        });*/
                     }
                 }
                 else {
-                    Toast.makeText(getActivity(),"Uploading...",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),"In Progress...",Toast.LENGTH_SHORT).show();
                     break;
                 }
                 return true;

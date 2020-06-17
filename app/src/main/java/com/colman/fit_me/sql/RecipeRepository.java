@@ -69,11 +69,11 @@ public class RecipeRepository {
         return mAllRecipes;
     }
 
-    public RecipeListLiveData getFirestoreLiveData() {
+/*    public RecipeListLiveData getFirestoreLiveData() {
         Query queryReference = firebaseFirestore
                 .collection("recipes").orderBy("name");
         return new RecipeListLiveData();
-    }
+    }*/
 
 
 
