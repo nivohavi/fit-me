@@ -68,17 +68,26 @@ public class RecipeModel {
         return liveData;
     }
 
+    // TODO: ############## isDeleted ##############
+    // TODO: add isDeleted property to Recipe
 
-    public void delete(Recipe recipe){
+
+    public void delete(Recipe recipe,Listener<Boolean> listener){
         RecipeFirebase.deleteRecipe(recipe, new Listener<Boolean>() {
+            @SuppressLint("StaticFieldLeak")
             @Override
             public void onComplete(Boolean data) {
                 new AsyncTask<String,String,String>(){
 
                     @Override
                     protected String doInBackground(String... strings) {
-                        RecipeRoomDatabase.getDatabase(MainActivity.context).recipeDao().delete(recipe);
+                        //RecipeRoomDatabase.getDatabase(MainActivity.context).recipeDao().delete(recipe);
                         return "";
+                    }
+                    @Override
+                    protected void onPostExecute(String s) {
+                        super.onPostExecute(s);
+                        if (listener!=null)  listener.onComplete(true);
                     }
                 }.execute("");
             }
@@ -106,7 +115,7 @@ public class RecipeModel {
                             //AppLocalDb.db.studentDao().insertAll(recipe);
                             //if (recipe.timestamp.getTime() > d.getTime())
                             //if ((recipe.timestamp.getTime() - d.getTime()) > Integer.parseInt(last))
-                            if(recipe.timestamp.after(d))
+                            if(recipe.timestamp.after(d) && !recipe.isDeleted())
                             {
                                 last = recipe.timestamp.getTime();
                             }

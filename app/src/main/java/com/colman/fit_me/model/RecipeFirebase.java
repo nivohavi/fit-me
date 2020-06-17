@@ -58,7 +58,10 @@ public class RecipeFirebase {
 
     public static void deleteRecipe(Recipe recipe, final RecipeModel.Listener<Boolean> listener) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection(RECIPE_COLLECTION).document(recipe.getId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+
+        // set isDeleted to true
+        recipe.delete();
+        db.collection(RECIPE_COLLECTION).document(recipe.getId()).set(toJson(recipe)).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (listener!=null){
@@ -67,6 +70,16 @@ public class RecipeFirebase {
                 }
             }
         });
+
+/*        db.collection(RECIPE_COLLECTION).document(recipe.getId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (listener!=null){
+                    listener.onComplete(task.isSuccessful());
+                    //RecipeRoomDatabase.getDatabase(ctx).recipeDao().delete(recipe);
+                }
+            }
+        });*/
     }
 
 
@@ -128,7 +141,7 @@ public class RecipeFirebase {
         Date d = new Date(last);
         //Timestamp ts = new Timestamp(last, 0);
         db.collection(RECIPE_COLLECTION)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .whereEqualTo("isDeleted",false).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 List<Recipe> recipesData = null;
@@ -183,6 +196,8 @@ public class RecipeFirebase {
         result.put("ingredientsJson", recipe.getIngredientsJson());
         result.put("imgURL",recipe.getImgURL());
         result.put("timestamp",new Timestamp(new Date()));
+        result.put("isDeleted",recipe.isDeleted());
+
 
         return result;
     }
@@ -199,6 +214,8 @@ public class RecipeFirebase {
         recipe.createdBy = (String)json.get("createdBy");
         recipe.ingredientsJson = (String)json.get("ingredientsJson");
         Timestamp ts = (Timestamp)json.get("timestamp");
+        recipe.isDeleted = (Boolean) json.get("isDeleted");
+
 
         if (ts != null) recipe.timestamp = new Date();
         return recipe;

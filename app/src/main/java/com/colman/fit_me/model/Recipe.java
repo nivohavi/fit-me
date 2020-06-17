@@ -37,6 +37,8 @@ public class Recipe implements Serializable {
     @ColumnInfo(name = "timestamp")
     @TypeConverters({Converters.class})
     public Date timestamp;
+    @ColumnInfo(name = "isDeleted")
+    public Boolean isDeleted;
 
     public Recipe(@NonNull String id, String name, String imgURL,String createdBy, String category, String description, String directions, String ingredientsJson, Date timestamp) {
         this.id = id;
@@ -48,6 +50,7 @@ public class Recipe implements Serializable {
         this.directions = directions;
         this.ingredientsJson = ingredientsJson;
         this.timestamp = timestamp;
+        this.isDeleted = false;
     }
 
     public Recipe() {
@@ -64,6 +67,8 @@ public class Recipe implements Serializable {
         this.directions = ((String) data.get("directions"));
         this.ingredientsJson = ((String) data.get("ingredientsJson"));
         this.timestamp = timestamp_to_date((Timestamp) data.get("timestamp"));
+        this.isDeleted = ((Boolean) data.get("isDeleted"));
+
     }
 /*
     public Recipe(String name) {
@@ -150,6 +155,14 @@ public class Recipe implements Serializable {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public Boolean isDeleted() {
+        return this.isDeleted;
+    }
+
+    public void delete() {
+        this.isDeleted = true;
     }
 
 

@@ -143,9 +143,20 @@ public class EditRecipeFragment extends Fragment {
         switch (item.getItemId())
         {
             case R.id.delete_button:
-                viewModel.deleteRecipe(r, result -> {
-                    nav.navigate(R.id.action_navigation_edit_recipe_to_navigation_my_recipes);
-                });
+                if (count == 0)
+                {
+                    count++;
+                    viewModel.deleteRecipe(r, result -> {
+                        nav.navigate(R.id.action_navigation_edit_recipe_to_navigation_my_recipes);
+                        progressBar.setVisibility(item.getActionView().INVISIBLE);
+                        count=0;
+                    });
+                }
+                else{
+                    Toast.makeText(getActivity(),"In Progress...",Toast.LENGTH_SHORT).show();
+                    break;
+                }
+
                 return true;
             case R.id.save_button:
                 if (count == 0)

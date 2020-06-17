@@ -14,7 +14,7 @@ public class EditRecipeViewModel extends ViewModel {
     }
 
     public void deleteRecipe(Recipe r, RecipeModel.Listener<Boolean> listener) {
-        RecipeModel.instance.delete(r);
+        RecipeModel.instance.delete(r, listener);
         //RecipeModel.instance.deleteRecipe(r,listener);
     }
 
