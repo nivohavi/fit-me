@@ -16,8 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -28,14 +26,11 @@ import com.colman.fit_me.LoginActivity;
 import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.R;
 import com.colman.fit_me.RecyclerViewClickInterface;
-import com.colman.fit_me.adapters.MyRecipesListAdapter;
-import com.colman.fit_me.adapters.RecipeListAdapter;
 import com.colman.fit_me.model.Recipe;
 import com.colman.fit_me.viewmodel.RecipeListViewModel;
 import com.colman.fit_me.viewmodel.RecipeViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -52,7 +47,6 @@ public class MyRecipesFragment extends Fragment implements RecyclerViewClickInte
     public static NavController nav;
     FloatingActionButton fab;
     private RecyclerView recyclerView;
-    private MyRecipesListAdapter adapter;
     private RecipeViewModel mRecipeViewModel;
     private TextView tv_no_data;
     private RecipeListViewModel viewModel;
@@ -97,6 +91,7 @@ public class MyRecipesFragment extends Fragment implements RecyclerViewClickInte
                 {
                     tv_no_data.setVisibility(View.INVISIBLE);
                     data = recipes;
+                    data.removeIf(recipe -> recipe.isDeleted());
                     new_adapter.notifyDataSetChanged();
                 }
                 else

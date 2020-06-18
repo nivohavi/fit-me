@@ -141,7 +141,7 @@ public class RecipeFirebase {
         Date d = new Date(last);
         //Timestamp ts = new Timestamp(last, 0);
         db.collection(RECIPE_COLLECTION)
-                .whereEqualTo("isDeleted",false).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 List<Recipe> recipesData = null;

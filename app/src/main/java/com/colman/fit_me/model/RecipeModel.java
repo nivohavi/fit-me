@@ -81,7 +81,9 @@ public class RecipeModel {
 
                     @Override
                     protected String doInBackground(String... strings) {
-                        //RecipeRoomDatabase.getDatabase(MainActivity.context).recipeDao().delete(recipe);
+
+                        // If to delete from local db or not
+                        RecipeRoomDatabase.getDatabase(MainActivity.context).recipeDao().update(recipe);
                         return "";
                     }
                     @Override
@@ -110,7 +112,14 @@ public class RecipeModel {
                         Date d = new Date(0);
                         for(Recipe recipe : data)
                         {
-                            RecipeRoomDatabase.getDatabase(ctx).recipeDao().insert(recipe);
+                            if(!recipe.isDeleted())
+                            {
+                                RecipeRoomDatabase.getDatabase(ctx).recipeDao().insert(recipe);
+                            }
+                            else
+                            {
+                                RecipeRoomDatabase.getDatabase(MainActivity.context).recipeDao().update(recipe);
+                            }
                             //RecipeRoomDatabase.getDatabase(ctx).recipeDao().insertAll(recipe);
                             //AppLocalDb.db.studentDao().insertAll(recipe);
                             //if (recipe.timestamp.getTime() > d.getTime())
@@ -119,6 +128,7 @@ public class RecipeModel {
                             {
                                 last = recipe.timestamp.getTime();
                             }
+
                         }
                         SharedPreferences.Editor edit = sharedPreferences.edit();
                         //edit.putLong("RecipesLastUpdateDate",lastUpdated);
