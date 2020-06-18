@@ -14,6 +14,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.R;
 import com.colman.fit_me.RecyclerViewClickInterface;
 import com.colman.fit_me.model.Recipe;
+import com.colman.fit_me.model.RecipeModel;
 import com.colman.fit_me.viewmodel.RecipeListViewModel;
 import com.colman.fit_me.viewmodel.RecipeViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -102,6 +104,8 @@ public class MyRecipesFragment extends Fragment implements RecyclerViewClickInte
             }
 
         });
+
+
 
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("My Recipes");
 
