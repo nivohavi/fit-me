@@ -29,6 +29,7 @@ import com.colman.fit_me.R;
 import com.colman.fit_me.RecyclerViewClickInterface;
 import com.colman.fit_me.model.Recipe;
 import com.colman.fit_me.model.RecipeModel;
+import com.colman.fit_me.ui.user_profile.UserProfileViewModel;
 import com.colman.fit_me.viewmodel.RecipeListViewModel;
 import com.colman.fit_me.viewmodel.RecipeViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -53,7 +54,8 @@ public class MyRecipesFragment extends Fragment implements RecyclerViewClickInte
     private TextView tv_no_data;
     private RecipeListViewModel viewModel;
     private ProgressBar progressBar;
-
+    private UserProfileViewModel userProfileViewModel;
+    private String email;
     LiveData<List<Recipe>> liveData;
     RecyclerView list;
     MyRecipesAdapter new_adapter;
@@ -67,13 +69,21 @@ public class MyRecipesFragment extends Fragment implements RecyclerViewClickInte
     public void onAttach(Context context) {
         super.onAttach(context);
         viewModel = new ViewModelProvider(this).get(RecipeListViewModel.class);
+        userProfileViewModel = new ViewModelProvider(this).get(UserProfileViewModel.class);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        String email = LoginActivity.mFirebaseUser.getEmail();
+
+        userProfileViewModel.getCurrentUserEmail(result ->{
+            if(!result.isEmpty())
+            {
+                email = result;
+            }
+        });
         root = inflater.inflate(R.layout.fragment_my_recipes, container, false);
         list = root.findViewById(R.id.recycler_view);
         list.setHasFixedSize(true);

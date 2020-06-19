@@ -2,6 +2,7 @@ package com.colman.fit_me;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.colman.fit_me.ui.user_profile.UserProfileViewModel;
+import com.colman.fit_me.viewmodel.NewRecipeViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -26,10 +29,9 @@ public class LoginActivity extends AppCompatActivity {
     EditText emailId, password;
     Button loginButton;
     TextView tvSignUp;
-    FirebaseAuth mFirebaseAuth;
     ImageView imageView;
+    private UserProfileViewModel viewModel;
     private ProgressBar pgsBar;
-    public static FirebaseUser mFirebaseUser;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
@@ -37,8 +39,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         getSupportActionBar().hide();
+        viewModel = new ViewModelProvider(this).get(UserProfileViewModel.class);
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
         emailId = findViewById(R.id.login_email);
         password = findViewById(R.id.login_password);
         loginButton = findViewById(R.id.loginButton);
@@ -49,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         String logo_url = "https://i.pinimg.com/originals/e6/13/21/e613212546d6c27600379a26cd601365.gif";
         Glide.with(this).load(logo_url).into(imageView);
 
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+/*        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 mFirebaseUser = mFirebaseAuth.getCurrentUser();
@@ -62,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                     //Toast.makeText(LoginActivity.this,"Please Login",Toast.LENGTH_SHORT).show();
                 }
             }
-        };
+        };*/
 
 
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +87,23 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this,"Fields Are Empty!",Toast.LENGTH_SHORT).show();
                 }
                 else  if(!(email.isEmpty() && pwd.isEmpty())){
-                    mFirebaseAuth.signInWithEmailAndPassword(email, pwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                    viewModel.login(email,pwd,data -> {
+                        if(data)
+                        {
+                            Intent intToHome = new Intent(LoginActivity.this,MainActivity.class);
+                            startActivity(intToHome);
+                            finish();
+                            pgsBar.setVisibility(v.INVISIBLE);
+                        }
+                        else
+                        {
+                            Toast.makeText(LoginActivity.this,"Login Error, Please Login Again",Toast.LENGTH_SHORT).show();
+                            pgsBar.setVisibility(v.INVISIBLE);
+                        }
+                    });
+
+
+/*                    mFirebaseAuth.signInWithEmailAndPassword(email, pwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
 
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -99,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                                 pgsBar.setVisibility(v.INVISIBLE);
                             }
                         }
-                    });
+                    });*/
                 }
                 else{
                     Toast.makeText(LoginActivity.this,"Error Occurred!",Toast.LENGTH_SHORT).show();
@@ -116,18 +134,19 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intSignUp = new Intent(LoginActivity.this, SignUpActivity.class);
                 startActivity(intSignUp);
+                finish();
             }
         });
     }
     @Override
     protected void onStart() {
         super.onStart();
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+        //mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
-
+/*
     @Override
     public void onBackPressed()
     {
         // Disable back button
-    }
+    }*/
 }

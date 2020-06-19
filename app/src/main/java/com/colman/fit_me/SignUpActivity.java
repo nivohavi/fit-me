@@ -2,6 +2,7 @@ package com.colman.fit_me;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.colman.fit_me.ui.user_profile.UserProfileViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -25,6 +27,8 @@ public class SignUpActivity extends AppCompatActivity {
     private TextView tvSignIn;
     private FirebaseAuth mFirebaseAuth;
     private ProgressBar pgsBar;
+    private UserProfileViewModel viewModel;
+
 
 
     @Override
@@ -32,6 +36,7 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         getSupportActionBar().hide();
+        viewModel = new ViewModelProvider(this).get(UserProfileViewModel.class);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         emailId = findViewById(R.id.signup_email);
@@ -58,7 +63,22 @@ public class SignUpActivity extends AppCompatActivity {
                     Toast.makeText(SignUpActivity.this,"Fields Are Empty!",Toast.LENGTH_SHORT).show();
                 }
                 else  if(!(email.isEmpty() && pwd.isEmpty())){
-                    mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+                    viewModel.signUp(email, pwd, data -> {
+                        if(data)
+                        {
+                            startActivity(new Intent(SignUpActivity.this,MainActivity.class));
+                            finish();
+                            pgsBar.setVisibility(v.INVISIBLE);
+                        }
+                        else
+                        {
+                            Toast.makeText(SignUpActivity.this,"SignUp Unsuccessful, Please Try Again",Toast.LENGTH_SHORT).show();
+                            pgsBar.setVisibility(v.INVISIBLE);
+                        }
+                    });
+
+
+/*                    mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(!task.isSuccessful()){
@@ -71,7 +91,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 pgsBar.setVisibility(v.INVISIBLE);
                             }
                         }
-                    });
+                    });*/
                 }
                 else{
                     Toast.makeText(SignUpActivity.this,"Error Occurred!",Toast.LENGTH_SHORT).show();
@@ -85,14 +105,15 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(SignUpActivity.this,LoginActivity.class);
                 startActivity(i);
+                finish();
             }
         });
 
     }
 
-    @Override
+/*    @Override
     public void onBackPressed()
     {
         // Disable back button
-    }
+    }*/
 }

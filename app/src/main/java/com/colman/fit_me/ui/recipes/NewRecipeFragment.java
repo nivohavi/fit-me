@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.colman.fit_me.LoginActivity;
 import com.colman.fit_me.R;
 import com.colman.fit_me.model.Recipe;
+import com.colman.fit_me.ui.user_profile.UserProfileViewModel;
 import com.colman.fit_me.viewmodel.NewRecipeViewModel;
 import com.colman.fit_me.viewmodel.RecipeListViewModel;
 import com.colman.fit_me.viewmodel.RecipeViewModel;
@@ -56,6 +57,7 @@ public class NewRecipeFragment extends Fragment {
     private RecipeViewModel mRecipeViewModel;
     private NewRecipeViewModel viewModel;
     private String newID;
+    private UserProfileViewModel userProfileViewModel;
 
     public static int count = 0;
 
@@ -63,6 +65,8 @@ public class NewRecipeFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         viewModel = new ViewModelProvider(this).get(NewRecipeViewModel.class);
+        userProfileViewModel = new ViewModelProvider(this).get(UserProfileViewModel.class);
+
     }
 
     public NewRecipeFragment() {
@@ -140,8 +144,13 @@ public class NewRecipeFragment extends Fragment {
                     viewModel.newRecipeId(data -> {
                         newID = data;
                     });
-                    Recipe r = new Recipe(newID,et_recipe_name.getText().toString(),"placeholder", LoginActivity.mFirebaseUser.getEmail(),pressed_category,et_recipe_description.getText().toString(),et_recipe_directions.getText().toString(),et_recipe_ing.getText().toString(),new Date());
-
+                    Recipe r = new Recipe(newID,et_recipe_name.getText().toString(),"placeholder", "",pressed_category,et_recipe_description.getText().toString(),et_recipe_directions.getText().toString(),et_recipe_ing.getText().toString(),new Date());
+                    userProfileViewModel.getCurrentUserEmail(email -> {
+                        if(!email.isEmpty())
+                        {
+                            r.setCreatedBy(email);
+                        }
+                    });
                     // Here will be image upload
                     //Uri path = Uri.parse("android.resource://com.colman.fit_me/" + R.drawable.recipe_placeholder);
                     if(filePath == null)

@@ -29,7 +29,6 @@ import java.util.Map;
 public class RecipeFirebase {
     final static String RECIPE_COLLECTION = "recipes";
     public static Context ctx = MainActivity.context;
-    ;
 
 
     public static void uploadImage(Uri imagePath, final RecipeModel.Listener<Uri> listener) {

@@ -25,6 +25,7 @@ import com.colman.fit_me.LoginActivity;
 import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.R;
 import com.colman.fit_me.model.Recipe;
+import com.colman.fit_me.ui.user_profile.UserProfileViewModel;
 import com.colman.fit_me.viewmodel.EditRecipeViewModel;
 import com.colman.fit_me.viewmodel.NewRecipeViewModel;
 import com.colman.fit_me.viewmodel.RecipeViewModel;
@@ -50,6 +51,7 @@ public class EditRecipeFragment extends Fragment {
     private ImageView img_recipe;
     private ProgressBar progressBar;
     private EditRecipeViewModel viewModel;
+    private UserProfileViewModel userProfileViewModel;
 
     private Uri filePath;
     int count = 0;
@@ -59,6 +61,8 @@ public class EditRecipeFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         viewModel = new ViewModelProvider(this).get(EditRecipeViewModel.class);
+        userProfileViewModel = new ViewModelProvider(this).get(UserProfileViewModel.class);
+
     }
 
 
@@ -163,7 +167,13 @@ public class EditRecipeFragment extends Fragment {
                 {
                     count++;
                     progressBar.setVisibility(item.getActionView().VISIBLE);
-                    Recipe recipe = new Recipe(r.getId(),et_recipe_name.getText().toString(),r.getImgURL(), LoginActivity.mFirebaseUser.getEmail(), r.getCategory(),et_recipe_description.getText().toString(),et_recipe_directions.getText().toString(),et_recipe_ing.getText().toString(),new Date());
+                    Recipe recipe = new Recipe(r.getId(),et_recipe_name.getText().toString(),r.getImgURL(), "", r.getCategory(),et_recipe_description.getText().toString(),et_recipe_directions.getText().toString(),et_recipe_ing.getText().toString(),new Date());
+                    userProfileViewModel.getCurrentUserEmail(email -> {
+                        if(!email.isEmpty())
+                        {
+                            recipe.setCreatedBy(email);
+                        }
+                    });
 /*                    data.put("id",r.getId());
                     data.put("name",et_recipe_name.getText().toString());
                     data.put("category",r.getCategory());
