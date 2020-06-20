@@ -114,7 +114,7 @@ public class RecipeListFragment extends Fragment implements RecyclerViewClickInt
                 {
                     tv_no_data.setVisibility(View.INVISIBLE);
                     data = recipes;
-                    data.removeIf(recipe -> recipe.isDeleted());
+                    data.removeIf(recipe -> (recipe.isDeleted() && !recipe.getCategory().equals(pressed_category)));
                     new_adapter.notifyDataSetChanged();
                 }
                 else

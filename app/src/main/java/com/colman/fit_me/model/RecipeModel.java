@@ -83,7 +83,7 @@ public class RecipeModel {
                     protected String doInBackground(String... strings) {
 
                         // If to delete from local db or not
-                        RecipeRoomDatabase.getDatabase(MainActivity.context).recipeDao().update(recipe);
+                        RecipeRoomDatabase.getDatabase(ctx).recipeDao().update(recipe);
                         return "";
                     }
                     @Override
@@ -118,7 +118,10 @@ public class RecipeModel {
                             }
                             else
                             {
-                                RecipeRoomDatabase.getDatabase(MainActivity.context).recipeDao().update(recipe);
+                                RecipeRoomDatabase.getDatabase(ctx).recipeDao().delete(recipe.getId());
+                                //RecipeRoomDatabase.getDatabase(ctx).recipeDao().updateIsDeleted(true,recipe.getId());
+
+                                //RecipeRoomDatabase.getDatabase(MainActivity.context).recipeDao().update(recipe);
                             }
                             //RecipeRoomDatabase.getDatabase(ctx).recipeDao().insertAll(recipe);
                             //AppLocalDb.db.studentDao().insertAll(recipe);

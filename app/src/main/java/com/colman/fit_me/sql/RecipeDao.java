@@ -34,6 +34,10 @@ public interface RecipeDao {
     @Update
     void update(Recipe recipe);
 
+    @Query("UPDATE recipe_table SET isDeleted=:setIsDeleted WHERE id = :id")
+    void updateIsDeleted(Boolean setIsDeleted, String id);
+
+
     @Delete
     void delete(Recipe recipe);
 

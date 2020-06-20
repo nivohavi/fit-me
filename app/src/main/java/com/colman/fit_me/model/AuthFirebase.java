@@ -16,11 +16,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AuthFirebase {
-    final static String RECIPE_COLLECTION = "recipes";
-    public static Context ctx = MainActivity.context;
     public static FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
     public static FirebaseUser mFirebaseUser;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
 
     public static void login(String email, String password,final UserModel.Listener<Boolean> listener) {
@@ -64,6 +61,10 @@ public class AuthFirebase {
 
 
     public static void getCurrentUserEmail(final UserModel.Listener<String> listener) {
-        listener.onComplete(mFirebaseAuth.getCurrentUser().getDisplayName());
-    }
+        String email = mFirebaseAuth.getCurrentUser().getEmail();
+            if( email != null )
+            {
+                listener.onComplete(email);
+            }
+        }
     }

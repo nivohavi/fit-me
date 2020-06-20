@@ -115,7 +115,18 @@ public class MyRecipesFragment extends Fragment implements RecyclerViewClickInte
 
         });
 
-
+        final SwipeRefreshLayout swipeRefresh = root.findViewById(R.id.recipes_list_swipe_refresh);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewModel.refresh(new RecipeModel.CompListener() {
+                    @Override
+                    public void onComplete() {
+                        swipeRefresh.setRefreshing(false);
+                    }
+                });
+            }
+        });
 
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("My Recipes");
 
