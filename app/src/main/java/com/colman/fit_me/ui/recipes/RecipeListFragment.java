@@ -114,7 +114,7 @@ public class RecipeListFragment extends Fragment implements RecyclerViewClickInt
                 {
                     tv_no_data.setVisibility(View.INVISIBLE);
                     data = recipes;
-                    data.removeIf(recipe -> (recipe.isDeleted() && !recipe.getCategory().equals(pressed_category)));
+                    data.removeIf(recipe -> (recipe.isDeleted() || !recipe.getCategory().equals(pressed_category)));
                     new_adapter.notifyDataSetChanged();
                 }
                 else
@@ -122,43 +122,9 @@ public class RecipeListFragment extends Fragment implements RecyclerViewClickInt
                     tv_no_data.setVisibility(View.VISIBLE);
                 }
                 MainActivity.mainProgressBar.setVisibility(View.INVISIBLE);
-                //adapter.setRecipes(recipes);
             }
 
         });
-
-/*        final SwipeRefreshLayout swipeRefresh = root.findViewById(R.id.students_list_swipe_refresh);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mRecipeViewModel.refresh(new RecipeModel().CompListener() {
-                    @Override
-                    public void onComplete() {
-                        swipeRefresh.setRefreshing(false);
-                    }
-                });
-            }
-        });*/
-
-        /////////////////////////////////////////////////////
-
-/*        mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
-        mRecipeViewModel.getRecipes().observe(this.getViewLifecycleOwner(), recipes -> {
-            recipes.removeIf(recipe -> (!recipe.getCategory().equals(pressed_category)));
-            if(!recipes.isEmpty())
-            {
-                tv_no_data.setVisibility(View.INVISIBLE);
-                recipesList = recipes;
-                //adapter.notifyDataSetChanged();
-            }
-            else
-            {
-                tv_no_data.setVisibility(View.VISIBLE);
-            }
-            adapter.setRecipes(recipes);
-            MainActivity.mainProgressBar.setVisibility(View.INVISIBLE);
-
-        });*/
 
         final SwipeRefreshLayout swipeRefresh = root.findViewById(R.id.recipes_list_swipe_refresh);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
