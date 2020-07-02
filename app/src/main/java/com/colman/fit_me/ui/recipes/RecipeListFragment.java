@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,14 +29,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.R;
 import com.colman.fit_me.RecyclerViewClickInterface;
-import com.colman.fit_me.adapters.RecipeListAdapter;
 
-import com.colman.fit_me.firebase.ModelFirebase;
 import com.colman.fit_me.model.Recipe;
 
 import com.colman.fit_me.model.RecipeModel;
 import com.colman.fit_me.viewmodel.RecipeListViewModel;
-import com.colman.fit_me.viewmodel.RecipeViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
@@ -49,18 +45,12 @@ public class RecipeListFragment extends Fragment implements RecyclerViewClickInt
 
     public static NavController nav;
     FloatingActionButton fab;
-    private RecyclerView recyclerView;
     private TextView tv_no_data;
-    private RecipeListAdapter adapter;
-    private RecipeViewModel mRecipeViewModel;
     private RecipeListViewModel viewModel;
-
-    private ModelFirebase modelFirebase;
     View root;
     public static List<Recipe> recipesList =new ArrayList<>();
     private String pressed_category;
     private ProgressBar progressBar;
-    Delegate parent;
     LiveData<List<Recipe>> liveData;
     RecyclerView list;
     public static List<Recipe> data = new LinkedList<Recipe>();
@@ -86,24 +76,6 @@ public class RecipeListFragment extends Fragment implements RecyclerViewClickInt
 
         progressBar = root.findViewById(R.id.progressBar);
         tv_no_data = root.findViewById(R.id.tv_no_data);
-
-
-        /////////
-
-/*        recyclerView = root.findViewById(R.id.recycler_view);
-        tv_no_data = root.findViewById(R.id.tv_no_data);
-        mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
-        progressBar = root.findViewById(R.id.progressBar);
-
-        adapter = new RecipeListAdapter();
-
-         pressed_category = RecipeListFragmentArgs.fromBundle(getArguments()).getCategory();
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.context);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);*/
-
-        ///////////////////// Eliav //////////////////////////
         pressed_category = RecipeListFragmentArgs.fromBundle(getArguments()).getCategory();
 
         liveData = viewModel.getData();
@@ -190,10 +162,6 @@ public class RecipeListFragment extends Fragment implements RecyclerViewClickInt
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-    }
-
-    interface Delegate{
-        void onItemSelected(Recipe recipe);
     }
 
     interface OnItemClickListener{
