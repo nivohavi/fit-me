@@ -20,20 +20,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import com.colman.fit_me.LoginActivity;
 import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.R;
 import com.colman.fit_me.model.Recipe;
 import com.colman.fit_me.ui.user_profile.UserProfileViewModel;
 import com.colman.fit_me.viewmodel.EditRecipeViewModel;
-import com.colman.fit_me.viewmodel.NewRecipeViewModel;
-import com.colman.fit_me.viewmodel.RecipeViewModel;
-import com.google.firebase.Timestamp;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -46,7 +41,6 @@ public class EditRecipeFragment extends Fragment {
     private Recipe r;
     private Map<String, Object> data;
     private final int PICK_IMAGE_REQUEST = 71;
-    private RecipeViewModel mRecipeViewModel;
     private EditText et_recipe_name,et_recipe_description,et_recipe_ing,et_recipe_directions;
     private ImageView img_recipe;
     private ProgressBar progressBar;
@@ -70,9 +64,7 @@ public class EditRecipeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_edit_recipe, container, false);
-        //mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
         r = RecipeDetailsFragmentArgs.fromBundle(getArguments()).getRecipeObj();
-        //data = new HashMap<>();
         ((MainActivity) getActivity()).getSupportActionBar().setTitle(r.getName());
 
 

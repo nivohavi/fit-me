@@ -4,13 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.preference.PreferenceManager;
-
 import androidx.lifecycle.LiveData;
-
 import com.colman.fit_me.MainActivity;
-import com.colman.fit_me.MyApplication;
 import com.colman.fit_me.sql.RecipeRoomDatabase;
 
 import static android.content.Context.MODE_PRIVATE;

@@ -4,41 +4,19 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.NavOptions;
-
 import com.colman.fit_me.LoginActivity;
 import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.R;
-import com.colman.fit_me.model.Recipe;
-import com.colman.fit_me.ui.home.HomeViewModel;
-import com.colman.fit_me.ui.recipes.NewRecipeFragmentDirections;
-import com.colman.fit_me.viewmodel.RecipeViewModel;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
-
-import java.util.Date;
-
 public class UserProfileFragment extends Fragment {
 
     private UserProfileViewModel userProfileViewModel;
@@ -46,10 +24,6 @@ public class UserProfileFragment extends Fragment {
     private TextView txt_user_email;
     private final int PICK_IMAGE_REQUEST = 71;
     private ProgressBar progressBar;
-    FirebaseAuth mFirebaseAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
-
-    public static FirebaseUser mFirebaseUser;
     private ImageView img_user;
     private Uri filePath;
     View root;
@@ -73,7 +47,9 @@ public class UserProfileFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
         txt_user_email = (TextView)view.findViewById(R.id.txt_user_email);
-        txt_user_email.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        userProfileViewModel.getCurrentUserEmail( email -> {
+            txt_user_email.setText(email);
+        });
         img_user = (ImageView)view.findViewById(R.id.profile_image);
         img_user.setOnClickListener(new View.OnClickListener() {
             @Override

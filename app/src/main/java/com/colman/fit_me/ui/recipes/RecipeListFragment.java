@@ -11,12 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,18 +23,14 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.R;
 import com.colman.fit_me.RecyclerViewClickInterface;
-
 import com.colman.fit_me.model.Recipe;
-
 import com.colman.fit_me.model.RecipeModel;
 import com.colman.fit_me.viewmodel.RecipeListViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;

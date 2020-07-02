@@ -22,8 +22,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.colman.fit_me.LoginActivity;
 import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.R;
 import com.colman.fit_me.RecyclerViewClickInterface;
@@ -31,12 +29,7 @@ import com.colman.fit_me.model.Recipe;
 import com.colman.fit_me.model.RecipeModel;
 import com.colman.fit_me.ui.user_profile.UserProfileViewModel;
 import com.colman.fit_me.viewmodel.RecipeListViewModel;
-import com.colman.fit_me.viewmodel.RecipeViewModel;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,12 +38,7 @@ import java.util.List;
  */
 public class MyRecipesFragment extends Fragment implements RecyclerViewClickInterface {
 
-    FirebaseAuth mFirebaseAuth;
-
     public static NavController nav;
-    FloatingActionButton fab;
-    private RecyclerView recyclerView;
-    private RecipeViewModel mRecipeViewModel;
     private TextView tv_no_data;
     private RecipeListViewModel viewModel;
     private ProgressBar progressBar;
@@ -59,11 +47,8 @@ public class MyRecipesFragment extends Fragment implements RecyclerViewClickInte
     LiveData<List<Recipe>> liveData;
     RecyclerView list;
     MyRecipesAdapter new_adapter;
-
     public static List<Recipe> data = new LinkedList<Recipe>();
-
     View root;
-    List<Recipe> recipesList =new ArrayList<>();
 
     @Override
     public void onAttach(Context context) {
@@ -185,7 +170,6 @@ public class MyRecipesFragment extends Fragment implements RecyclerViewClickInte
                     int position = getAdapterPosition();
                     Recipe r = data.get(position);
                     MyRecipesFragmentDirections.ActionMyRecipesFragmentToEditRecipeFragment action = MyRecipesFragmentDirections.actionMyRecipesFragmentToEditRecipeFragment(r);
-                    //RecipeListFragmentDirections.ActionNavigationRecipeListToNavigationRecipeDetails action = RecipeListFragmentDirections.actionNavigationRecipeListToNavigationRecipeDetails(r);
                     action.setRecipeObj(r);
                     nav.navigate(action);
                 }

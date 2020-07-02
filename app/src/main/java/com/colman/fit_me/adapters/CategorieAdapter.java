@@ -6,18 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.colman.fit_me.R;
 import com.colman.fit_me.RecyclerViewClickInterface;
 import com.colman.fit_me.model.Category;
-import com.colman.fit_me.ui.ex_item.ExItemdFragment;
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 
 

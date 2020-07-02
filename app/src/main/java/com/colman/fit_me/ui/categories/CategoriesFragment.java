@@ -1,41 +1,21 @@
 package com.colman.fit_me.ui.categories;
-
-import android.app.ActionBar;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.colman.fit_me.ExActivity;
-import com.colman.fit_me.LoginActivity;
 import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.R;
 import com.colman.fit_me.RecyclerViewClickInterface;
 import com.colman.fit_me.adapters.CategorieAdapter;
 import com.colman.fit_me.model.Category;
-import com.colman.fit_me.ui.recipes.RecipeListFragmentDirections;
-
 import java.util.ArrayList;
 
 
@@ -47,7 +27,6 @@ public class CategoriesFragment extends Fragment implements RecyclerViewClickInt
     ArrayList<Category> categoriesList =new ArrayList<>();
     private RecyclerView recyclerView;
     private CategorieAdapter adapter;
-    public static String categoryPressed;
     private ImageView img_recipe;
 
 
@@ -89,7 +68,6 @@ public class CategoriesFragment extends Fragment implements RecyclerViewClickInt
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        //MainActivity.mainProgressBar.setVisibility(View.INVISIBLE);
         return root;
     }
 

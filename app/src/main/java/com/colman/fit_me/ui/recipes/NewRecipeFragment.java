@@ -1,19 +1,13 @@
 package com.colman.fit_me.ui.recipes;
-
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
-
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,23 +15,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import com.colman.fit_me.LoginActivity;
 import com.colman.fit_me.R;
 import com.colman.fit_me.model.Recipe;
 import com.colman.fit_me.ui.user_profile.UserProfileViewModel;
 import com.colman.fit_me.viewmodel.NewRecipeViewModel;
-import com.colman.fit_me.viewmodel.RecipeListViewModel;
-import com.colman.fit_me.viewmodel.RecipeViewModel;
 import com.squareup.picasso.Picasso;
-
-import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -45,7 +31,6 @@ import java.util.Date;
  */
 public class NewRecipeFragment extends Fragment {
 
-    private static final int RESULT_OK = 1;
     View root;
     NavController nav;
     private EditText et_recipe_name,et_recipe_description,et_recipe_ing,et_recipe_directions;
@@ -57,7 +42,6 @@ public class NewRecipeFragment extends Fragment {
     private NewRecipeViewModel viewModel;
     private String newID;
     private UserProfileViewModel userProfileViewModel;
-
     public static int count = 0;
 
     @Override
@@ -151,7 +135,6 @@ public class NewRecipeFragment extends Fragment {
                     });
                     if(filePath == null)
                     {
-                        //filePath = path;
                         r.setImgURL("https://i1.wp.com/ilikeweb.co.za/wp-content/uploads/2019/07/placeholder.png");
                         viewModel.addRecipe(r,data -> {
                             if(data)

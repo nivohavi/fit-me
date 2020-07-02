@@ -1,34 +1,20 @@
 package com.colman.fit_me.ui.recipes;
-
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-
 import com.colman.fit_me.MainActivity;
 import com.colman.fit_me.R;
 import com.colman.fit_me.model.Recipe;
-import com.colman.fit_me.ui.categories.CategoriesFragment;
 import com.colman.fit_me.viewmodel.RecipeViewModel;
 import com.squareup.picasso.Picasso;
-
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
 
 
 /**
@@ -39,17 +25,11 @@ public class RecipeDetailsFragment extends Fragment {
     View root;
     NavController nav;
     private Recipe r;
-    private RecipeViewModel mRecipeViewModel;
     private TextView tv_recipe_name;
     private TextView tv_recipe_description;
     private TextView tv_recipe_ing;
     private TextView tv_recipe_directions;
-
     private ImageView img_recipe;
-
-
-
-
 
     public RecipeDetailsFragment() {
         // Required empty public constructor
@@ -61,7 +41,6 @@ public class RecipeDetailsFragment extends Fragment {
     {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_recipe_details, container, false);
-        mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
         r = RecipeDetailsFragmentArgs.fromBundle(getArguments()).getRecipeObj();
         ((MainActivity) getActivity()).getSupportActionBar().setTitle(r.getName());
         MainActivity.mainProgressBar.setVisibility(View.VISIBLE);

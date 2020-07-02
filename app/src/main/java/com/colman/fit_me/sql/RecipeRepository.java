@@ -1,33 +1,16 @@
 package com.colman.fit_me.sql;
-
-import android.app.Application;
 import android.os.Build;
-import android.util.Log;
+import android.app.Application;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 
-import com.colman.fit_me.firebase.FirestoreManager;
-import com.colman.fit_me.firebase.RecipeListLiveData;
 import com.colman.fit_me.model.Recipe;
-import com.colman.fit_me.utils.Converters;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RecipeRepository {
 
@@ -43,19 +26,6 @@ public class RecipeRepository {
     // https://github.com/googlesamples
     public RecipeRepository(Application application) {
         lud = new Date();
-/*        firestoreManager.getLastUpdateFirebase(new OnCompleteListener<DocumentSnapshot>() {
-            int count =0;
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    // Document found in the offline cache
-                    DocumentSnapshot document = task.getResult();
-                    lud = Converters.fromTimestamp((Timestamp) document.get("timestamp"));
-                } else {
-                    Log.d("Niv", "Cached get failed: ", task.getException());
-                }
-            }
-        });*/
         lud = new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime();
         RecipeRoomDatabase db = RecipeRoomDatabase.getDatabase(application);
         mRecipeDao = db.recipeDao();
@@ -68,14 +38,6 @@ public class RecipeRepository {
     {
         return mAllRecipes;
     }
-
-/*    public RecipeListLiveData getFirestoreLiveData() {
-        Query queryReference = firebaseFirestore
-                .collection("recipes").orderBy("name");
-        return new RecipeListLiveData();
-    }*/
-
-
 
     // You must call this on a non-UI thread or your app will throw an exception. Room ensures
     // that you're not doing any long running operations on the main thread, blocking the UI.
