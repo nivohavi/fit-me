@@ -1,6 +1,5 @@
 package com.colman.fit_me;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -14,10 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.colman.fit_me.ui.user_profile.UserProfileViewModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
+
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -25,11 +21,8 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText password;
     private Button signUpButton;
     private TextView tvSignIn;
-    private FirebaseAuth mFirebaseAuth;
     private ProgressBar pgsBar;
     private UserProfileViewModel viewModel;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +31,6 @@ public class SignUpActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         viewModel = new ViewModelProvider(this).get(UserProfileViewModel.class);
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
         emailId = findViewById(R.id.signup_email);
         password = findViewById(R.id.signup_password);
         signUpButton = findViewById(R.id.signUpButton);
@@ -76,22 +68,6 @@ public class SignUpActivity extends AppCompatActivity {
                             pgsBar.setVisibility(v.INVISIBLE);
                         }
                     });
-
-
-/*                    mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(!task.isSuccessful()){
-                                Toast.makeText(SignUpActivity.this,"SignUp Unsuccessful, Please Try Again",Toast.LENGTH_SHORT).show();
-                                pgsBar.setVisibility(v.INVISIBLE);
-
-                            }
-                            else {
-                                startActivity(new Intent(SignUpActivity.this,MainActivity.class));
-                                pgsBar.setVisibility(v.INVISIBLE);
-                            }
-                        }
-                    });*/
                 }
                 else{
                     Toast.makeText(SignUpActivity.this,"Error Occurred!",Toast.LENGTH_SHORT).show();
@@ -110,10 +86,4 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
     }
-
-/*    @Override
-    public void onBackPressed()
-    {
-        // Disable back button
-    }*/
 }

@@ -39,9 +39,6 @@ public class RecipeModel {
         RecipeFirebase.uploadImage(uri,listener);
     }
 
-    public void deleteRecipe(Recipe recipe,Listener<Boolean> listener) {
-        RecipeFirebase.deleteRecipe(recipe,listener);
-    }
 
     public void addRecipe(Recipe recipe,Listener<Boolean> listener) {
         RecipeFirebase.addRecipe(recipe,listener);
@@ -89,14 +86,11 @@ public class RecipeModel {
                 }.execute("");
             }
         });
-        //RecipeRoomDatabase.getDatabase(MainActivity.context).recipeDao().delete(recipe);
-
     }
 
     public void refreshRecipesList(final CompListener listener){
 
         last = sharedPreferences.getLong("RecipesLastUpdateDate",0);
-        Date begining = new Date(0);
         RecipeFirebase.getAllRecipesSince(last,new Listener<List<Recipe>>() {
             @SuppressLint("StaticFieldLeak")
             @Override
@@ -114,23 +108,13 @@ public class RecipeModel {
                             else
                             {
                                 RecipeRoomDatabase.getDatabase(ctx).recipeDao().delete(recipe.getId());
-                                //RecipeRoomDatabase.getDatabase(ctx).recipeDao().updateIsDeleted(true,recipe.getId());
-
-                                //RecipeRoomDatabase.getDatabase(MainActivity.context).recipeDao().update(recipe);
                             }
-                            //RecipeRoomDatabase.getDatabase(ctx).recipeDao().insertAll(recipe);
-                            //AppLocalDb.db.studentDao().insertAll(recipe);
-                            //if (recipe.timestamp.getTime() > d.getTime())
-                            //if ((recipe.timestamp.getTime() - d.getTime()) > Integer.parseInt(last))
                             if(recipe.timestamp.after(d) && !recipe.isDeleted())
                             {
                                 last = recipe.timestamp.getTime();
                             }
-
                         }
                         SharedPreferences.Editor edit = sharedPreferences.edit();
-                        //edit.putLong("RecipesLastUpdateDate",lastUpdated);
-                        // edit.putLong("RecipesLastUpdateDate",d.getTime());
                         edit.commit();
                         return "";
                     }
